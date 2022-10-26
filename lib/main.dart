@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
       title: 'Petani Film',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        colorScheme: const ColorScheme.dark(),
         textTheme: GoogleFonts.nunitoTextTheme().apply(
           bodyColor: Constants.whiteColor,
         ),

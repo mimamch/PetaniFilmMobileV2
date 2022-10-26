@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:shimmer/shimmer.dart';
@@ -14,7 +15,11 @@ class HomeMovieItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        if (movie.type == 'movie') {
+          context.pushNamed('movie', extra: movie);
+        }
+      },
       child: Stack(
         children: [
           ClipRRect(

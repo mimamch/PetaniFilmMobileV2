@@ -17,21 +17,24 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<MovieItemModel> featured = [];
   bool isLoading = false;
+  int pageKey = 1;
   final TextEditingController searchController = TextEditingController();
 
   final PagingController<int, MovieItemModel> _pagingController =
       PagingController(firstPageKey: 1);
+  final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      _pagingController.addPageRequestListener((pageKey) {
-        if (pageKey == 1) {
-          getData();
-        } else {
+      _scrollController.addListener(() {
+        if (_scrollController.offset ==
+            _scrollController.position.maxScrollExtent) {
           fetchMore(pageKey);
+          pageKey++;
         }
       });
+      getData();
     }
   }
 
@@ -81,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
           title: const Text('PETANI FILM'),
         ),
         body: ListView(
+            controller: _scrollController,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
             children: [
               const Text(
@@ -170,8 +174,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ),
-                physics: const NeverScrollableScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 shrinkWrap: true,
+                showNewPageErrorIndicatorAsGridChild: true,
+                showNewPageProgressIndicatorAsGridChild: true,
+                showNoMoreItemsIndicatorAsGridChild: true,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     crossAxisSpacing: 20,
