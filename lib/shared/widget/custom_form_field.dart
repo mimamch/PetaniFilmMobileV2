@@ -36,7 +36,6 @@ class CustomFormField extends StatelessWidget {
         ),
         CustomTextField(
           inputType: inputType,
-          prefix: prefix,
           controller: controller,
           secure: secure,
           disabled: disabled,

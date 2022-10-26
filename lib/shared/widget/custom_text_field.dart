@@ -4,7 +4,6 @@ import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
     super.key,
-    this.prefix,
     this.inputType = TextInputType.text,
     this.controller,
     this.placeholder,
@@ -13,7 +12,6 @@ class CustomTextField extends StatelessWidget {
     this.disabled = false,
     this.maxLines = 1,
   });
-  final String? prefix;
   final TextInputType inputType;
   final TextEditingController? controller;
   final String? placeholder;
@@ -30,30 +28,26 @@ class CustomTextField extends StatelessWidget {
       readOnly: disabled,
       onChanged: ((value) => onChange == null ? null : onChange!(value)),
       style: const TextStyle(
-        color: Constants.blackColor,
+        color: Constants.whiteColor,
         // fontSize: 16,
       ),
       decoration: InputDecoration(
-        prefixIcon: prefix == null
-            ? null
-            : Text(
-                '  $prefix ',
-                style: const TextStyle(
-                  color: Constants.blackColor,
-                  // fontSize: 16,
-                ),
-              ),
-        prefixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+        enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide:
+                const BorderSide(width: 1, color: Constants.whiteColor)),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide:
+                const BorderSide(width: 2, color: Constants.whiteColor)),
         contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         hintText: placeholder,
-        hintStyle: const TextStyle(fontSize: 14),
+        hintStyle: const TextStyle(fontSize: 14, color: Constants.whiteColor),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(
-            width: 0,
-            color: Color(
-              0xFFE2E1E4,
-            ),
+            width: 1,
+            color: Constants.whiteColor,
           ),
         ),
       ),
