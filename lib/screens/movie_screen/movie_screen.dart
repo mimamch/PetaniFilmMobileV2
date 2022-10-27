@@ -6,7 +6,6 @@ import 'package:petani_film_v2/services/movie_services.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/custom_snackbar.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class MovieScreen extends StatefulWidget {
   const MovieScreen({super.key, required this.movie});
