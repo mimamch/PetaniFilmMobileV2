@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/services/movie_services.dart';
@@ -17,21 +16,20 @@ class MovieScreen extends StatefulWidget {
 class _MovieScreenState extends State<MovieScreen> {
   MovieItemModel? movie;
   String? error;
+  int currentServer = 1;
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      getData();
+      getData(widget.movie.url!);
     }
   }
 
-  Future<MovieItemModel> getData() async {
+  Future<MovieItemModel> getData(url) async {
     try {
       if (widget.movie.url != null) {
-        MovieItemModel movieDetail =
-            await MovieServices().getMovieDetail(widget.movie.url!);
+        MovieItemModel movieDetail = await MovieServices().getMovieDetail(url);
         movie = movieDetail;
-
         setState(() {});
         return movieDetail;
       }
@@ -39,6 +37,15 @@ class _MovieScreenState extends State<MovieScreen> {
     } catch (e) {
       rethrow;
     }
+  }
+
+  void changeStreamServer(int player) {
+    setState(() {
+      movie = null;
+      error = null;
+      currentServer = player;
+    });
+    getData("${widget.movie.url ?? ''}?player=$player");
   }
 
   @override
@@ -56,16 +63,23 @@ class _MovieScreenState extends State<MovieScreen> {
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )
-                : ShowData(movie: movie!));
+                : ShowData(
+                    movie: movie!,
+                    changeStreamServer: changeStreamServer,
+                    currentServer: currentServer,
+                  ));
   }
 }
 
 class ShowData extends StatefulWidget {
-  const ShowData({
-    super.key,
-    required this.movie,
-  });
+  const ShowData(
+      {super.key,
+      required this.movie,
+      required this.changeStreamServer,
+      required this.currentServer});
   final MovieItemModel movie;
+  final Function changeStreamServer;
+  final int currentServer;
 
   @override
   State<ShowData> createState() => _ShowDataState();
@@ -76,13 +90,8 @@ class _ShowDataState extends State<ShowData> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       children: [
-        // Container(
-        //   color: Constants.greyColor,
-        //   height: 150,
-        // ),
         widget.movie.streamingLink == null
             ? Container(
                 color: Constants.greyColor,
@@ -98,6 +107,42 @@ class _ShowDataState extends State<ShowData> {
                 : WebViewModal(
                     streamingLink: widget.movie.streamingLink!,
                   ),
+        const SizedBox(
+          height: 15,
+        ),
+        const Text(
+          'Pilih Server',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        if (widget.movie.totalStreamingServer != null)
+          Wrap(
+              runSpacing: 5,
+              children: List.generate(
+                  widget.movie.totalStreamingServer!,
+                  (index) => GestureDetector(
+                        onTap: () {
+                          widget.changeStreamServer(index + 1);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          decoration: BoxDecoration(
+                              color: widget.currentServer == index + 1
+                                  ? Constants.lightBlueColor
+                                  : Constants.greyColor,
+                              borderRadius: BorderRadius.circular(3)),
+                          child: Text(
+                            'Server ${index + 1}',
+                          ),
+                        ),
+                      ))),
         const SizedBox(
           height: 15,
         ),
@@ -212,23 +257,52 @@ class WebViewModal extends StatelessWidget {
 //       javascriptMode: JavascriptMode.disabled,
 //       onPageFinished: (src) => debugPrint(src),
 //     );
-    final iframe = '''
-<iframe src="$streamingLink" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-''';
+//     final iframe = '''
+// <html>
+// <body>
+// <iframe src="$streamingLink" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+// </body>
+// </html>
+// ''';
 
-    final frm = Uri.dataFromString(
-      iframe,
-      mimeType: 'text/html',
-    );
+    // final frm = Uri.dataFromString(
+    //   iframe,
+    //   mimeType: 'text/html',
+    // );
+
     return SizedBox(
       height: 200,
-      child: InAppWebView(
-        initialUrlRequest: URLRequest(url: frm),
-        onCreateWindow: (controller, createWindowAction) async => false,
-        // initialOptions:
-        //     InAppWebViewGroupOptions(crossPlatform: InAppWebViewOptions(
+      // child: InAppWebView(
+      //   initialUrlRequest: URLRequest(url: frm),
+      //   onCreateWindow: (controller, createWindowAction) async {
+      //     print('WINDOW OPEN>>>>>>>>>>>>>>>>>>>>>>>');
+      //   },
+      //   // initialOptions:
+      //   //     InAppWebViewGroupOptions(crossPlatform: InAppWebViewOptions(
 
-        //     )),
+      //   //     )),
+
+      //   // onConsoleMessage: (controller, consoleMessage) =>
+      //   //     print(consoleMessage.message),
+      // ),
+      child: WebViewX(
+        width: double.infinity,
+        height: 200,
+        initialSourceType: SourceType.url,
+        initialContent: streamingLink,
+        navigationDelegate: (NavigationRequest navigation) {
+          return NavigationDecision.prevent;
+          // if (request.content.source) {
+          //   print('blocking navigation to $request}');
+          //   return NavigationDecision.prevent;
+          // }
+          // if (request.url.startsWith('https://flutter.dev/docs')) {
+          //   print('blocking navigation to $request}');
+          //   return NavigationDecision.prevent;
+          // }
+          // print('allowing navigation to $request');
+          // return NavigationDecision.navigate;
+        },
       ),
     );
   }
