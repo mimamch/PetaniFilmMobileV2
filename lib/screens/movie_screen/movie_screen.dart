@@ -356,9 +356,9 @@ class _WebViewModalState extends State<WebViewModal> {
               return NavigationActionPolicy.CANCEL;
             },
             initialOptions: InAppWebViewGroupOptions(
-              android: AndroidInAppWebViewOptions(
-                  // useHybridComposition: true,
-                  ),
+              crossPlatform: InAppWebViewOptions(
+                useShouldOverrideUrlLoading: true,
+              ),
             ),
             onLoadError: (controller, url, code, message) => setState(() {
               index = 2;
