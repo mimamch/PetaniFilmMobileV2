@@ -14,6 +14,7 @@ void main() async {
   // OneSignalServices().oneSignalInit();
   // SystemChrome.setSystemUIOverlayStyle(
   //     const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
 

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/services/movie_services.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
-import 'package:webviewx/webviewx.dart';
+import 'package:petani_film_v2/shared/widget/custom_snackbar.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class MovieScreen extends StatefulWidget {
   const MovieScreen({super.key, required this.movie});
@@ -14,9 +17,9 @@ class MovieScreen extends StatefulWidget {
 }
 
 class _MovieScreenState extends State<MovieScreen> {
-  MovieItemModel? movie;
+  MovieItemModel? movieTemp;
   String? error;
-  int currentServer = 1;
+  int currentServer = 0;
   @override
   void initState() {
     super.initState();
@@ -29,7 +32,7 @@ class _MovieScreenState extends State<MovieScreen> {
     try {
       if (widget.movie.url != null) {
         MovieItemModel movieDetail = await MovieServices().getMovieDetail(url);
-        movie = movieDetail;
+        movieTemp = movieDetail;
         setState(() {});
         return movieDetail;
       }
@@ -40,8 +43,9 @@ class _MovieScreenState extends State<MovieScreen> {
   }
 
   void changeStreamServer(int player) {
+    if (player == currentServer) return;
     setState(() {
-      movie = null;
+      movieTemp = movieTemp?.copyWith(streamingLink: null);
       error = null;
       currentServer = player;
     });
@@ -52,7 +56,7 @@ class _MovieScreenState extends State<MovieScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(widget.movie.title ?? 'Tanpa Judul')),
-        body: error == null && movie == null
+        body: error == null && movieTemp == null
             ? const Center(
                 child: CircularProgressIndicator(),
               )
@@ -64,7 +68,7 @@ class _MovieScreenState extends State<MovieScreen> {
                     ),
                   )
                 : ShowData(
-                    movie: movie!,
+                    movie: movieTemp!,
                     changeStreamServer: changeStreamServer,
                     currentServer: currentServer,
                   ));
@@ -94,19 +98,36 @@ class _ShowDataState extends State<ShowData> {
       children: [
         widget.movie.streamingLink == null
             ? Container(
-                color: Constants.greyColor,
-                height: 150,
-                child: const Text('Tidak Tersedia'),
+                color: Constants.blackColor,
+                height: 200,
+                child: Container(
+                  color: Constants.blackColor,
+                  height: 200,
+                  child: const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
               )
-            : error != null
+            : widget.currentServer == 0
                 ? Container(
                     color: Constants.greyColor,
-                    height: 150,
-                    child: Text(error!),
+                    height: 200,
+                    child: const Center(
+                        child: Text(
+                      'Plih Server',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    )),
                   )
-                : WebViewModal(
-                    streamingLink: widget.movie.streamingLink!,
-                  ),
+                : error != null
+                    ? Container(
+                        color: Constants.blackColor,
+                        height: 150,
+                        child: Text(error!),
+                      )
+                    : WebViewModal(
+                        streamingLink: widget.movie.streamingLink!,
+                      ),
         const SizedBox(
           height: 15,
         ),
@@ -143,6 +164,48 @@ class _ShowDataState extends State<ShowData> {
                           ),
                         ),
                       ))),
+        const SizedBox(
+          height: 10,
+        ),
+        const Text(
+          'Download',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        if (widget.movie.downloadLinks != null)
+          Wrap(
+              runSpacing: 5,
+              children: widget.movie.downloadLinks!
+                  .map((e) => GestureDetector(
+                        onTap: () async {
+                          try {
+                            if (e['link'] == null) throw Error();
+                            // await launchUrlString(e['link'],
+                            //     mode: LaunchMode.platformDefault);
+                            await launchUrl(Uri.parse(e['link']),
+                                mode: LaunchMode.externalApplication);
+                          } catch (e) {
+                            showCustomSnackbar(context, 'Gagal Membuka Link');
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          decoration: BoxDecoration(
+                              color: Constants.greenColor,
+                              borderRadius: BorderRadius.circular(3)),
+                          child: Text(
+                            e['label'] ?? 'Tidak Diketahui',
+                          ),
+                        ),
+                      ))
+                  .toList()),
         const SizedBox(
           height: 15,
         ),
@@ -227,49 +290,19 @@ class _ShowDataState extends State<ShowData> {
   }
 }
 
-class WebViewModal extends StatelessWidget {
+class WebViewModal extends StatefulWidget {
   const WebViewModal({super.key, required this.streamingLink});
   final String streamingLink;
 
   @override
+  State<WebViewModal> createState() => _WebViewModalState();
+}
+
+class _WebViewModalState extends State<WebViewModal> {
+  int index = 0;
+
+  @override
   Widget build(BuildContext context) {
-//     return WebViewX(
-//       width: double.infinity,
-//       height: 200,
-//       initialContent: """
-// <!doctype html>
-// <html lang="en">
-//     <head>
-//         <meta charset="UTF-8">
-//         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-//         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-//         <title>Flutter InAppBrowser</title>
-//     </head>
-//     <body>
-//         <iframe src="$streamingLink" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-//     </body>
-// </html>""",
-//       initialSourceType: SourceType.html,
-//       // initialContent: widget.movie.streamingLink!,
-//       // initialSourceType: SourceType.url,
-//       // mobileSpecificParams: MobileSpecificParams(
-//       //     debuggingEnabled: true, androidEnableHybridComposition: true),
-//       javascriptMode: JavascriptMode.disabled,
-//       onPageFinished: (src) => debugPrint(src),
-//     );
-//     final iframe = '''
-// <html>
-// <body>
-// <iframe src="$streamingLink" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
-// </body>
-// </html>
-// ''';
-
-    // final frm = Uri.dataFromString(
-    //   iframe,
-    //   mimeType: 'text/html',
-    // );
-
     return SizedBox(
       height: 200,
       // child: InAppWebView(
@@ -285,24 +318,62 @@ class WebViewModal extends StatelessWidget {
       //   // onConsoleMessage: (controller, consoleMessage) =>
       //   //     print(consoleMessage.message),
       // ),
-      child: WebViewX(
-        width: double.infinity,
-        height: 200,
-        initialSourceType: SourceType.url,
-        initialContent: streamingLink,
-        navigationDelegate: (NavigationRequest navigation) {
-          return NavigationDecision.prevent;
-          // if (request.content.source) {
-          //   print('blocking navigation to $request}');
-          //   return NavigationDecision.prevent;
-          // }
-          // if (request.url.startsWith('https://flutter.dev/docs')) {
-          //   print('blocking navigation to $request}');
-          //   return NavigationDecision.prevent;
-          // }
-          // print('allowing navigation to $request');
-          // return NavigationDecision.navigate;
-        },
+      child: IndexedStack(
+        index: index,
+        children: [
+          Container(
+            color: Constants.blackColor,
+            height: 200,
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          // WebViewX(
+          //   width: double.infinity,
+          //   height: 200,
+          //   initialSourceType: SourceType.url,
+          //   // initialContent: widget.streamingLink,
+          //   initialContent: 'https://smm.mimamch.online',
+          //   onPageFinished: (src) => setState(() {
+          //     index = 1;
+          //   }),
+          //   onWebResourceError: (error) => setState(() {
+          //     index = 2;
+          //   }),
+          //   navigationDelegate: (NavigationRequest navigation) {
+          //     return NavigationDecision.prevent;
+          //   },
+          // ),
+          InAppWebView(
+            initialUrlRequest: URLRequest(url: Uri.parse(widget.streamingLink)),
+            onCreateWindow: (controller, createWindowAction) async {
+              return false;
+            },
+            onLoadStop: (controller, url) => setState(() {
+              index = 1;
+            }),
+            shouldOverrideUrlLoading: (controller, navigationAction) async {
+              return NavigationActionPolicy.CANCEL;
+            },
+            initialOptions: InAppWebViewGroupOptions(
+              android: AndroidInAppWebViewOptions(
+                  // useHybridComposition: true,
+                  ),
+            ),
+            onLoadError: (controller, url, code, message) => setState(() {
+              index = 2;
+            }),
+          ),
+          Container(
+            color: Constants.greyColor,
+            height: 200,
+            child: const Center(
+                child: Text(
+              'Upsss... Terjadi Kesalahan',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )),
+          )
+        ],
       ),
     );
   }

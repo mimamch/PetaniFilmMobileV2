@@ -68,6 +68,22 @@ class HomeMovieItem extends StatelessWidget {
                   ),
                 )),
           ),
+          if (movie.type == 'tv')
+            Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  decoration: const BoxDecoration(
+                      color: Constants.lightBlueColor,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(5),
+                      )),
+                  child: const Text(
+                    'TV',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+                  ),
+                ))
         ],
       ),
     );
@@ -106,7 +122,16 @@ class HomeFeaturedItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        if (movie.type == 'movie') {
+          if (context.canPop()) {
+            context.pop();
+            context.pushNamed('movie', extra: movie);
+          } else {
+            context.pushNamed('movie', extra: movie);
+          }
+        }
+      },
       child: Stack(
         children: [
           ClipRRect(
@@ -156,6 +181,22 @@ class HomeFeaturedItem extends StatelessWidget {
                   ),
                 )),
           ),
+          if (movie.type == 'tv')
+            Positioned(
+                right: 0,
+                top: 0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  decoration: const BoxDecoration(
+                      color: Constants.lightBlueColor,
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(5),
+                      )),
+                  child: const Text(
+                    'TV',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
+                  ),
+                ))
         ],
       ),
     );

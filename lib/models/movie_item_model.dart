@@ -62,4 +62,26 @@ class MovieItemModel {
   static List<MovieItemModel> fromArray(List<Map<String, dynamic>> array) {
     return array.map((e) => MovieItemModel.fromJson(e)).toList();
   }
+
+  copyWith({String? streamingLink}) {
+    return MovieItemModel(
+      title: title,
+      duration: duration,
+      genres: genres,
+      posterUrl: posterUrl,
+      rating: rating,
+      trailer: trailer,
+      type: type,
+      url: url,
+      actors: actors,
+      country: country,
+      description: description,
+      downloadLinks: downloadLinks,
+      relatedPost: relatedPost,
+      releaseDate: releaseDate,
+      streamingLink: streamingLink,
+      totalStreamingServer: totalStreamingServer,
+      year: year,
+    );
+  }
 }
