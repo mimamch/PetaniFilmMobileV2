@@ -112,6 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: CustomTextField(
                           controller: searchController,
                           onSubmitted: (value) {
+                            if (searchController.text.isEmpty) return;
                             context.pushNamed('search',
                                 params: {"query": searchController.text});
                           },
@@ -126,6 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     IconButton(
                         color: Constants.whiteColor,
                         onPressed: () {
+                          if (searchController.text.isEmpty) return;
                           context.pushNamed('search',
                               params: {"query": searchController.text});
                         },

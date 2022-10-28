@@ -8,10 +8,9 @@ import 'package:petani_film_v2/screens/tv_screen/tv_episode_screen/tv_episode_sc
 import 'package:petani_film_v2/screens/tv_screen/tv_screen.dart';
 
 final GoRouter mainRouter = GoRouter(
-  initialLocation: '/home',
   routes: <GoRoute>[
     GoRoute(
-      path: '/home',
+      path: '/',
       name: 'home',
       builder: (BuildContext context, GoRouterState state) {
         return const HomeScreen();
