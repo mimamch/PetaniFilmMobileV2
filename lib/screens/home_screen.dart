@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
@@ -110,8 +111,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: CustomTextField(
                           controller: searchController,
+                          onSubmitted: (value) {
+                            context.pushNamed('search',
+                                params: {"query": searchController.text});
+                          },
                           inputType: TextInputType.text,
                           maxLines: 1,
+                          action: TextInputAction.go,
                           placeholder: 'Cari Film / Series'),
                     ),
                     const SizedBox(
@@ -119,7 +125,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     IconButton(
                         color: Constants.whiteColor,
-                        onPressed: () {},
+                        onPressed: () {
+                          context.pushNamed('search',
+                              params: {"query": searchController.text});
+                        },
                         icon: const Icon(
                           Icons.search,
                           color: Constants.whiteColor,

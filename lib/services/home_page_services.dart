@@ -31,4 +31,21 @@ class HomePageServices {
       rethrow;
     }
   }
+
+  Future<List<MovieItemModel>> getSearchQuery({String? query}) async {
+    try {
+      Response response = await Dio()
+          .get('${Constants.apiBaseUrl}/search?search=${query ?? ''}');
+      final data = MovieItemModel.fromArray(
+          List<Map<String, dynamic>>.from(response.data['data'] ?? []));
+      return data;
+    } on DioError catch (e) {
+      if (e.response == null) {
+        throw 'Periksa Koneksi Internet Anda';
+      }
+      throw e.response?.data?['message'] ?? 'Terjadi Kesalahan';
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

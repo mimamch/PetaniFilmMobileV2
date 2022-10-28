@@ -2,23 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 
 class CustomTextField extends StatelessWidget {
-  const CustomTextField({
-    super.key,
-    this.inputType = TextInputType.text,
-    this.controller,
-    this.placeholder,
-    this.onChange,
-    this.secure = false,
-    this.disabled = false,
-    this.maxLines = 1,
-  });
+  const CustomTextField(
+      {super.key,
+      this.inputType = TextInputType.text,
+      this.controller,
+      this.placeholder,
+      this.onChange,
+      this.secure = false,
+      this.disabled = false,
+      this.maxLines = 1,
+      this.action,
+      this.onSubmitted});
   final TextInputType inputType;
   final TextEditingController? controller;
   final String? placeholder;
   final Function? onChange;
+  final Function? onSubmitted;
   final bool secure;
   final bool disabled;
   final int? maxLines;
+  final TextInputAction? action;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +56,10 @@ class CustomTextField extends StatelessWidget {
       ),
       keyboardType: inputType,
       maxLines: maxLines,
+      textInputAction: action,
+      onSubmitted: (value) {
+        if (onSubmitted != null) onSubmitted!(value);
+      },
     );
   }
 }
