@@ -83,7 +83,25 @@ class HomeMovieItem extends StatelessWidget {
                     'TV',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
                   ),
-                ))
+                )),
+          if (movie.quality != null)
+            Positioned(
+              left: 0,
+              top: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                decoration: const BoxDecoration(
+                    color: Constants.greenColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(5),
+                    )),
+                child: Text(
+                  movie.quality ?? '-',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 10),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -103,7 +121,7 @@ class HomeMovieItemShimmer extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(15),
         child: Container(
-          // width: double.infinity,
+          width: double.infinity,
           height: 100,
           color: Constants.greyColor,
         ),
@@ -183,20 +201,39 @@ class HomeFeaturedItem extends StatelessWidget {
           ),
           if (movie.type == 'tv')
             Positioned(
-                right: 0,
-                top: 0,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  decoration: const BoxDecoration(
-                      color: Constants.lightBlueColor,
-                      borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(5),
-                      )),
-                  child: const Text(
-                    'TV',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11),
-                  ),
-                ))
+              right: 0,
+              top: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                decoration: const BoxDecoration(
+                    color: Constants.lightBlueColor,
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(5),
+                    )),
+                child: const Text(
+                  'TV',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                ),
+              ),
+            ),
+          if (movie.quality != null)
+            Positioned(
+              left: 0,
+              top: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                decoration: const BoxDecoration(
+                    color: Constants.greenColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(5),
+                    )),
+                child: Text(
+                  movie.quality ?? '-',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 10),
+                ),
+              ),
+            ),
         ],
       ),
     );

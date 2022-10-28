@@ -6,6 +6,7 @@ import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/services/home_page_services.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/custom_text_field.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -42,7 +43,6 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       Map<String, dynamic> data =
           await HomePageServices().getHomePageItem(page: 1);
-
       featured = data['featured'] ?? [] as List<MovieItemModel>;
       if (data['current_page'] >= data['total_pages']) {
         _pagingController.appendLastPage(data['last_uploaded']);
@@ -80,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           title: const Text('PETANI FILM'),
@@ -130,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 if (featured.isNotEmpty) ...[
                   const Text(
-                    'Populer',
+                    'Rekomendasi',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
@@ -165,9 +166,24 @@ class _HomeScreenState extends State<HomeScreen> {
                         movie: item,
                       );
                     },
-                    firstPageProgressIndicatorBuilder: (context) =>
-                        const Center(
-                      child: CircularProgressIndicator(),
+                    firstPageProgressIndicatorBuilder: (context) => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        3,
+                        (index) => Shimmer.fromColors(
+                          baseColor: const Color.fromARGB(255, 163, 163, 163),
+                          highlightColor:
+                              const Color.fromRGBO(245, 245, 245, 1),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Container(
+                              width: (size.width - 60) / 3,
+                              height: (size.width - 60) / 2,
+                              color: Constants.greyColor,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                     newPageProgressIndicatorBuilder: (context) =>
                         const HomeMovieItemShimmer(),
@@ -184,13 +200,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  physics: const BouncingScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   showNewPageErrorIndicatorAsGridChild: true,
                   showNewPageProgressIndicatorAsGridChild: true,
                   showNoMoreItemsIndicatorAsGridChild: true,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: MediaQuery.of(context).orientation ==
+                              Orientation.portrait
+                          ? 3
+                          : 5,
                       crossAxisSpacing: 20,
                       childAspectRatio: 152 / 228,
                       mainAxisSpacing: 20),

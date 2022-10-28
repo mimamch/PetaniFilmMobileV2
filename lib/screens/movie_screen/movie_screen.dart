@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/services/movie_services.dart';
@@ -237,6 +238,27 @@ class _ShowDataState extends State<ShowData> {
                       ),
                     ))
                 .toList()),
+        const SizedBox(
+          height: 8,
+        ),
+        const Text(
+          'Rating',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        if (widget.movie.rating != null)
+          RatingBar.builder(
+            itemCount: 5,
+            initialRating: widget.movie.rating! / 2,
+            itemSize: 20,
+            itemBuilder: (context, _) => const Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            onRatingUpdate: (value) {},
+          ),
         const SizedBox(
           height: 8,
         ),
