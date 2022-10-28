@@ -1,3 +1,4 @@
+import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petani_film_v2/routes.dart';
@@ -18,8 +19,24 @@ void main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    initializePlugin();
+  }
+
+  Future<void> initializePlugin() async {
+    Map? configuration = await AppLovinMAX.initialize(Constants.applovinSdkKey);
+    if (configuration != null) {}
+  }
 
   // This widget is the root of your application.
   @override

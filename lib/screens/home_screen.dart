@@ -6,6 +6,7 @@ import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/services/home_page_services.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
+import 'package:petani_film_v2/shared/widget/applovin_ads_widget.dart';
 import 'package:petani_film_v2/shared/widget/custom_text_field.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -86,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           title: const Text('PETANI FILM'),
         ),
+        bottomNavigationBar: ApplovinAdsWidget().bannerAds,
         body: RefreshIndicator(
           onRefresh: () async {
             featured.clear();

@@ -1,4 +1,4 @@
-package com.example.petani_film_v2
+package com.noxious.petanifilm
 
 import io.flutter.embedding.android.FlutterActivity
 
