@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
@@ -131,7 +132,7 @@ class _ShowDataState extends State<ShowData> {
           height: 15,
         ),
         const Text(
-          'Pilih Server',
+          'Pilih Server Streaming',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -206,7 +207,13 @@ class _ShowDataState extends State<ShowData> {
                       ))
                   .toList()),
         const SizedBox(
-          height: 15,
+          height: 8,
+        ),
+        const Divider(
+          color: Constants.whiteColor,
+        ),
+        const SizedBox(
+          height: 8,
         ),
         const Text(
           'Genre',
@@ -244,6 +251,19 @@ class _ShowDataState extends State<ShowData> {
         const SizedBox(
           height: 8,
         ),
+        if (widget.movie.country != null) ...[
+          const Text(
+            'Negara',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(widget.movie.country ?? '-'),
+          const SizedBox(
+            height: 8,
+          ),
+        ],
         const Text(
           'Sinopsis',
           style: TextStyle(
@@ -254,6 +274,9 @@ class _ShowDataState extends State<ShowData> {
         Text(widget.movie.description ?? '-'),
         const SizedBox(
           height: 15,
+        ),
+        const Divider(
+          color: Constants.whiteColor,
         ),
         const Text(
           'Film Terkait',
@@ -304,19 +327,6 @@ class _WebViewModalState extends State<WebViewModal> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 200,
-      // child: InAppWebView(
-      //   initialUrlRequest: URLRequest(url: frm),
-      //   onCreateWindow: (controller, createWindowAction) async {
-      //     print('WINDOW OPEN>>>>>>>>>>>>>>>>>>>>>>>');
-      //   },
-      //   // initialOptions:
-      //   //     InAppWebViewGroupOptions(crossPlatform: InAppWebViewOptions(
-
-      //   //     )),
-
-      //   // onConsoleMessage: (controller, consoleMessage) =>
-      //   //     print(consoleMessage.message),
-      // ),
       child: IndexedStack(
         index: index,
         children: [
@@ -327,22 +337,6 @@ class _WebViewModalState extends State<WebViewModal> {
               child: CircularProgressIndicator(),
             ),
           ),
-          // WebViewX(
-          //   width: double.infinity,
-          //   height: 200,
-          //   initialSourceType: SourceType.url,
-          //   // initialContent: widget.streamingLink,
-          //   initialContent: 'https://smm.mimamch.online',
-          //   onPageFinished: (src) => setState(() {
-          //     index = 1;
-          //   }),
-          //   onWebResourceError: (error) => setState(() {
-          //     index = 2;
-          //   }),
-          //   navigationDelegate: (NavigationRequest navigation) {
-          //     return NavigationDecision.prevent;
-          //   },
-          // ),
           InAppWebView(
             initialUrlRequest: URLRequest(url: Uri.parse(widget.streamingLink)),
             onCreateWindow: (controller, createWindowAction) async {
@@ -362,6 +356,12 @@ class _WebViewModalState extends State<WebViewModal> {
             onLoadError: (controller, url, code, message) => setState(() {
               index = 2;
             }),
+            onEnterFullscreen: (controller) =>
+                SystemChrome.setPreferredOrientations(
+                    [DeviceOrientation.landscapeLeft]),
+            onExitFullscreen: (controller) =>
+                SystemChrome.setPreferredOrientations(
+                    [DeviceOrientation.portraitUp]),
           ),
           Container(
             color: Constants.greyColor,

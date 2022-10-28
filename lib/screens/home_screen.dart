@@ -17,11 +17,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<MovieItemModel> featured = [];
   bool isLoading = false;
-  int pageKey = 1;
+  int pageKey = 2;
   final TextEditingController searchController = TextEditingController();
 
   final PagingController<int, MovieItemModel> _pagingController =
-      PagingController(firstPageKey: 1);
+      PagingController(firstPageKey: 2);
   final ScrollController _scrollController = ScrollController();
   @override
   void initState() {
@@ -61,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     super.dispose();
     _pagingController.dispose();
+    _scrollController.dispose();
   }
 
   Future<void> fetchMore(page) async {
@@ -83,108 +84,118 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           title: const Text('PETANI FILM'),
         ),
-        body: ListView(
-            controller: _scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            children: [
-              const Text(
-                'Search',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: CustomTextField(
-                        controller: searchController,
-                        inputType: TextInputType.text,
-                        maxLines: 1,
-                        placeholder: 'Cari Film / Series'),
-                  ),
-                  const SizedBox(
-                    width: 5,
-                  ),
-                  IconButton(
-                      color: Constants.whiteColor,
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.search,
-                        color: Constants.whiteColor,
-                      )),
-                ],
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              if (featured.isNotEmpty) ...[
+        body: RefreshIndicator(
+          onRefresh: () async {
+            featured.clear();
+            pageKey = 2;
+            _pagingController.refresh();
+            setState(() {});
+            getData();
+            return await Future.delayed(const Duration(seconds: 1));
+          },
+          child: ListView(
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              children: [
                 const Text(
-                  'Populer',
+                  'Search',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                CarouselSlider.builder(
-                    itemCount: featured.length,
-                    itemBuilder: (context, index, realIndex) {
-                      return HomeFeaturedItem(movie: featured[index]);
-                    },
-                    options: CarouselOptions(
-                      height: 150,
-                      autoPlay: true,
-                      viewportFraction: 0.3,
-                    )),
+                Row(
+                  children: [
+                    Expanded(
+                      child: CustomTextField(
+                          controller: searchController,
+                          inputType: TextInputType.text,
+                          maxLines: 1,
+                          placeholder: 'Cari Film / Series'),
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    IconButton(
+                        color: Constants.whiteColor,
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.search,
+                          color: Constants.whiteColor,
+                        )),
+                  ],
+                ),
                 const SizedBox(
                   height: 20,
                 ),
-              ],
-              const Text(
-                'Baru Diperbarui',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              PagedGridView<int, MovieItemModel>(
-                pagingController: _pagingController,
-                builderDelegate: PagedChildBuilderDelegate<MovieItemModel>(
-                  itemBuilder: (context, item, index) {
-                    return HomeMovieItem(
-                      movie: item,
-                    );
-                  },
-                  firstPageProgressIndicatorBuilder: (context) => const Center(
-                    child: CircularProgressIndicator(),
+                if (featured.isNotEmpty) ...[
+                  const Text(
+                    'Populer',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  newPageProgressIndicatorBuilder: (context) => const Center(
-                    child: CircularProgressIndicator(),
+                  const SizedBox(
+                    height: 10,
                   ),
-                  newPageErrorIndicatorBuilder: (context) => Center(
-                    child: Text(
-                      _pagingController.error?.toString() ?? '',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
+                  CarouselSlider.builder(
+                      itemCount: featured.length,
+                      itemBuilder: (context, index, realIndex) {
+                        return HomeFeaturedItem(movie: featured[index]);
+                      },
+                      options: CarouselOptions(
+                        height: 150,
+                        autoPlay: true,
+                        viewportFraction: 0.3,
+                      )),
+                  const SizedBox(
+                    height: 20,
                   ),
-                  firstPageErrorIndicatorBuilder: (context) => Center(
-                    child: Text(
-                      _pagingController.error?.toString() ?? '',
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                ],
+                const Text(
+                  'Baru Diperbarui',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                physics: const BouncingScrollPhysics(),
-                shrinkWrap: true,
-                showNewPageErrorIndicatorAsGridChild: true,
-                showNewPageProgressIndicatorAsGridChild: true,
-                showNoMoreItemsIndicatorAsGridChild: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 20,
-                    childAspectRatio: 152 / 228,
-                    mainAxisSpacing: 20),
-              ),
-            ]));
+                const SizedBox(
+                  height: 10,
+                ),
+                PagedGridView<int, MovieItemModel>(
+                  pagingController: _pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<MovieItemModel>(
+                    itemBuilder: (context, item, index) {
+                      return HomeMovieItem(
+                        movie: item,
+                      );
+                    },
+                    firstPageProgressIndicatorBuilder: (context) =>
+                        const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    newPageProgressIndicatorBuilder: (context) =>
+                        const HomeMovieItemShimmer(),
+                    newPageErrorIndicatorBuilder: (context) => Center(
+                      child: Text(
+                        _pagingController.error?.toString() ?? '',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    firstPageErrorIndicatorBuilder: (context) => Center(
+                      child: Text(
+                        _pagingController.error?.toString() ?? '',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  physics: const BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  showNewPageErrorIndicatorAsGridChild: true,
+                  showNewPageProgressIndicatorAsGridChild: true,
+                  showNoMoreItemsIndicatorAsGridChild: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 20,
+                      childAspectRatio: 152 / 228,
+                      mainAxisSpacing: 20),
+                ),
+              ]),
+        ));
   }
 }
