@@ -9,6 +9,41 @@ class MovieServices {
           '${Constants.apiBaseUrl}/get-movie-by-link/',
           data: {"link": url});
       return MovieItemModel.fromJson(response.data['data']);
+    } on DioError catch (e) {
+      if (e.response == null) {
+        throw 'Perika Koneksi Internet';
+      }
+      throw e.response?.data['message'] ?? 'Terjadi Kesalahan!';
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<MovieItemModel> getTvDetail(String url) async {
+    try {
+      Response response = await Dio()
+          .post('${Constants.apiBaseUrl}/get-tv-by-link/', data: {"link": url});
+      return MovieItemModel.fromJson(response.data['data']);
+    } on DioError catch (e) {
+      if (e.response == null) {
+        throw 'Perika Koneksi Internet';
+      }
+      throw e.response?.data['message'] ?? 'Terjadi Kesalahan!';
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<MovieItemModel> getTvEpisode(String url) async {
+    try {
+      Response response = await Dio()
+          .post('${Constants.apiBaseUrl}/get-tv-episode/', data: {"link": url});
+      return MovieItemModel.fromJson(response.data['data']);
+    } on DioError catch (e) {
+      if (e.response == null) {
+        throw 'Perika Koneksi Internet';
+      }
+      throw e.response?.data['message'] ?? 'Terjadi Kesalahan!';
     } catch (e) {
       rethrow;
     }

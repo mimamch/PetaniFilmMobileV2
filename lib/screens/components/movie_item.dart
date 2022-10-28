@@ -16,9 +16,7 @@ class HomeMovieItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (movie.type == 'movie') {
-          context.pushNamed('movie', extra: movie);
-        }
+        context.pushNamed('detail', extra: movie);
       },
       child: Stack(
         children: [
@@ -141,13 +139,11 @@ class HomeFeaturedItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (movie.type == 'movie') {
-          if (context.canPop()) {
-            context.pop();
-            context.pushNamed('movie', extra: movie);
-          } else {
-            context.pushNamed('movie', extra: movie);
-          }
+        if (context.canPop()) {
+          context.pop();
+          context.pushNamed('detail', extra: movie);
+        } else {
+          context.pushNamed('detail', extra: movie);
         }
       },
       child: Stack(

@@ -12,6 +12,7 @@ class Constants {
 
   static const imageBaseUrl = 'http://mimamch.online:5002/images';
   static const apiBaseUrl = 'http://116.193.190.155:4001/v2';
+  // static const apiBaseUrl = 'http://192.168.18.83:3000/v2';
 
   static const oneSignalAppId = 'a833874c-0e62-4c57-ac59-8eeac79f8bc4';
 }

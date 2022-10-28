@@ -9,15 +9,15 @@ import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/custom_snackbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MovieScreen extends StatefulWidget {
-  const MovieScreen({super.key, required this.movie});
+class TvEpisodeScreen extends StatefulWidget {
+  const TvEpisodeScreen({super.key, required this.movie});
   final MovieItemModel movie;
 
   @override
-  State<MovieScreen> createState() => _MovieScreenState();
+  State<TvEpisodeScreen> createState() => _TvEpisodeScreenState();
 }
 
-class _MovieScreenState extends State<MovieScreen> {
+class _TvEpisodeScreenState extends State<TvEpisodeScreen> {
   MovieItemModel? movieTemp;
   String? error;
   int currentServer = 0;
@@ -33,7 +33,12 @@ class _MovieScreenState extends State<MovieScreen> {
     try {
       error = null;
       if (widget.movie.url == null) throw 'Terjadi Kesalahan';
-      MovieItemModel movieDetail = await MovieServices().getMovieDetail(url);
+      MovieItemModel movieDetail = await MovieServices().getTvEpisode(url);
+      movieDetail = widget.movie.copyWith(
+        totalStreamingServer: movieDetail.totalStreamingServer,
+        streamingLink: movieDetail.streamingLink,
+        downloadLinks: movieDetail.downloadLinks,
+      );
       movieTemp = movieDetail;
       setState(() {});
       return movieDetail;
@@ -57,7 +62,9 @@ class _MovieScreenState extends State<MovieScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.movie.title ?? 'Tanpa Judul')),
+        appBar: AppBar(
+            title: Text(
+                '[${widget.movie.currentEpisode ?? ''}] ${widget.movie.title ?? 'Tanpa Judul'}')),
         body: error == null && movieTemp == null
             ? const Center(
                 child: CircularProgressIndicator(),

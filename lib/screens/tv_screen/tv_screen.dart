@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/services/movie_services.dart';
@@ -9,15 +10,15 @@ import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/custom_snackbar.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class MovieScreen extends StatefulWidget {
-  const MovieScreen({super.key, required this.movie});
+class TvScreen extends StatefulWidget {
+  const TvScreen({super.key, required this.movie});
   final MovieItemModel movie;
 
   @override
-  State<MovieScreen> createState() => _MovieScreenState();
+  State<TvScreen> createState() => _TvScreenState();
 }
 
-class _MovieScreenState extends State<MovieScreen> {
+class _TvScreenState extends State<TvScreen> {
   MovieItemModel? movieTemp;
   String? error;
   int currentServer = 0;
@@ -33,7 +34,9 @@ class _MovieScreenState extends State<MovieScreen> {
     try {
       error = null;
       if (widget.movie.url == null) throw 'Terjadi Kesalahan';
-      MovieItemModel movieDetail = await MovieServices().getMovieDetail(url);
+      MovieItemModel movieDetail = await MovieServices().getTvDetail(url);
+      movieDetail = movieDetail.copyWith(
+          title: widget.movie.title, streamingLink: movieDetail.streamingLink);
       movieTemp = movieDetail;
       setState(() {});
       return movieDetail;
@@ -71,21 +74,16 @@ class _MovieScreenState extends State<MovieScreen> {
                   )
                 : ShowData(
                     movie: movieTemp!,
-                    changeStreamServer: changeStreamServer,
-                    currentServer: currentServer,
                   ));
   }
 }
 
 class ShowData extends StatefulWidget {
-  const ShowData(
-      {super.key,
-      required this.movie,
-      required this.changeStreamServer,
-      required this.currentServer});
+  const ShowData({
+    super.key,
+    required this.movie,
+  });
   final MovieItemModel movie;
-  final Function changeStreamServer;
-  final int currentServer;
 
   @override
   State<ShowData> createState() => _ShowDataState();
@@ -98,77 +96,63 @@ class _ShowDataState extends State<ShowData> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       children: [
-        widget.movie.streamingLink == null
-            ? Container(
-                color: Constants.blackColor,
-                height: 200,
-                child: Container(
-                  color: Constants.blackColor,
-                  height: 200,
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-              )
-            : widget.currentServer == 0
-                ? Container(
-                    color: Constants.greyColor,
-                    height: 200,
-                    child: const Center(
-                        child: Text(
-                      'Plih Server',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    )),
-                  )
-                : error != null
-                    ? Container(
-                        color: Constants.blackColor,
-                        height: 150,
-                        child: Text(error!),
-                      )
-                    : WebViewModal(
-                        streamingLink: widget.movie.streamingLink!,
-                      ),
-        const SizedBox(
-          height: 15,
-        ),
-        const Text(
-          'Pilih Server Streaming',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        if (widget.movie.streamingLink != null) ...[
+          WebViewModal(streamingLink: widget.movie.streamingLink!),
+          const SizedBox(
+            height: 8,
           ),
-        ),
-        const SizedBox(
-          height: 5,
-        ),
-        if (widget.movie.totalStreamingServer != null)
+          const SizedBox(
+            height: 10,
+          ),
+        ],
+        if (widget.movie.streamingLink == null)
+          Container(
+            color: Constants.blackColor,
+            height: 200,
+            child: const Center(
+                child: Text(
+              'Tidak Ada Trailer',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )),
+          ),
+        if (widget.movie.episodes != null &&
+            widget.movie.episodes!.isNotEmpty) ...[
+          const Text(
+            'Pilih Episode',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(
+            height: 5,
+          ),
           Wrap(
               runSpacing: 5,
-              children: List.generate(
-                  widget.movie.totalStreamingServer!,
-                  (index) => GestureDetector(
+              children: widget.movie.episodes!
+                  .map((e) => GestureDetector(
                         onTap: () {
-                          widget.changeStreamServer(index + 1);
+                          MovieItemModel data = widget.movie.copyWith(
+                              url: e['link'], currentEpisode: e['label']);
+                          context.pushNamed('tv-episode', extra: data);
                         },
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 5),
                           margin: const EdgeInsets.symmetric(horizontal: 2),
                           decoration: BoxDecoration(
-                              color: widget.currentServer == index + 1
-                                  ? Constants.lightBlueColor
-                                  : Constants.greyColor,
+                              color: Constants.lightBlueColor,
                               borderRadius: BorderRadius.circular(3)),
                           child: Text(
-                            'Server ${index + 1}',
+                            e['label'] ?? 'Tidak Diketahui',
                           ),
                         ),
-                      ))),
-        const SizedBox(
-          height: 10,
-        ),
+                      ))
+                  .toList()),
+          const SizedBox(
+            height: 8,
+          ),
+        ],
         if (widget.movie.downloadLinks != null &&
             widget.movie.downloadLinks!.isNotEmpty) ...[
           const Text(
@@ -389,7 +373,7 @@ class _WebViewModalState extends State<WebViewModal> {
                     [DeviceOrientation.portraitUp]),
           ),
           Container(
-            color: Constants.greyColor,
+            color: Constants.blackColor,
             height: 200,
             child: const Center(
                 child: Text(
