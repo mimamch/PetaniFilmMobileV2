@@ -10,6 +10,7 @@ import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/applovin_ads_widget.dart';
 import 'package:petani_film_v2/shared/widget/custom_snackbar.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wakelock/wakelock.dart';
 
 class TvScreen extends StatefulWidget {
   const TvScreen({super.key, required this.movie});
@@ -27,6 +28,7 @@ class _TvScreenState extends State<TvScreen> {
   void initState() {
     super.initState();
     if (mounted) {
+      Wakelock.enable();
       getData(widget.movie.url!);
     }
   }
@@ -62,7 +64,8 @@ class _TvScreenState extends State<TvScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text(widget.movie.title ?? 'Tanpa Judul')),
-        bottomNavigationBar: ApplovinAdsWidget().bannerAds,
+        bottomNavigationBar:
+            Constants.showAds ? ApplovinAdsWidget().bannerAds : null,
         body: error == null && movieTemp == null
             ? const Center(
                 child: CircularProgressIndicator(),

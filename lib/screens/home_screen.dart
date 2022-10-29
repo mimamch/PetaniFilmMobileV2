@@ -87,7 +87,8 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           title: const Text('PETANI FILM'),
         ),
-        bottomNavigationBar: ApplovinAdsWidget().bannerAds,
+        bottomNavigationBar:
+            Constants.showAds ? ApplovinAdsWidget().bannerAds : null,
         body: RefreshIndicator(
           onRefresh: () async {
             featured.clear();

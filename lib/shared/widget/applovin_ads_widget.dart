@@ -20,4 +20,14 @@ class ApplovinAdsWidget {
       }, onAdRevenuePaidCallback: (ad) {
         debugPrint('Banner widget ad revenue paid: ${ad.revenue}');
       }));
+
+  Future<void> showInterstitialAds() async {
+    bool isReady = (await AppLovinMAX.isInterstitialReady(
+        Constants.applovinInterstitialAdUnitId))!;
+    if (isReady) {
+      AppLovinMAX.showInterstitial(Constants.applovinInterstitialAdUnitId);
+    } else {
+      AppLovinMAX.loadInterstitial(Constants.applovinInterstitialAdUnitId);
+    }
+  }
 }
