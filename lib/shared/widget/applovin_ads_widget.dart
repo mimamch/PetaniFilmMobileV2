@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
@@ -34,6 +36,27 @@ class ApplovinAdsWidget {
 
   void initializeInterstitialAds() {
     if (!Constants.showAds) return;
+    AppLovinMAX.setInterstitialListener(InterstitialListener(
+      onAdLoadedCallback: (ad) {
+        Constants.interstitialRetryAttempt = 0;
+      },
+      onAdLoadFailedCallback: (adUnitId, error) {
+        Constants.interstitialRetryAttempt =
+            Constants.interstitialRetryAttempt + 1;
+
+        int retryDelay =
+            pow(2, min(6, Constants.interstitialRetryAttempt)).toInt();
+
+        Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
+          AppLovinMAX.loadInterstitial(Constants.applovinInterstitialAdUnitId);
+        });
+      },
+      onAdDisplayedCallback: (ad) {},
+      onAdDisplayFailedCallback: (ad, error) {},
+      onAdClickedCallback: (ad) {},
+      onAdHiddenCallback: (ad) {},
+      onAdRevenuePaidCallback: (ad) {},
+    ));
     AppLovinMAX.loadInterstitial(Constants.applovinInterstitialAdUnitId);
   }
 }

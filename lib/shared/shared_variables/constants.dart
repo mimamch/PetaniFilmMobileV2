@@ -25,4 +25,6 @@ class Constants {
       Platform.isAndroid ? "9c9e2a4d7155e261" : "";
   static var applovinInterstitialAdUnitId =
       Platform.isAndroid ? "aa1c03016bdc905f" : "";
+
+  static int interstitialRetryAttempt = 0;
 }
