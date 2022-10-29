@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
@@ -8,6 +6,7 @@ import 'package:petani_film_v2/services/movie_services.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/applovin_ads_widget.dart';
 import 'package:petani_film_v2/shared/widget/custom_snackbar.dart';
+import 'package:petani_film_v2/shared/widget/webview_iframe_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wakelock/wakelock.dart';
 
@@ -340,72 +339,6 @@ class _ShowDataState extends State<ShowData> {
           height: 10,
         ),
       ],
-    );
-  }
-}
-
-class WebViewModal extends StatefulWidget {
-  const WebViewModal({super.key, required this.streamingLink});
-  final String streamingLink;
-
-  @override
-  State<WebViewModal> createState() => _WebViewModalState();
-}
-
-class _WebViewModalState extends State<WebViewModal> {
-  int index = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 200,
-      child: IndexedStack(
-        index: index,
-        children: [
-          Container(
-            color: Constants.blackColor,
-            height: 200,
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          ),
-          InAppWebView(
-            initialUrlRequest: URLRequest(url: Uri.parse(widget.streamingLink)),
-            onCreateWindow: (controller, createWindowAction) async {
-              return false;
-            },
-            onLoadStop: (controller, url) => setState(() {
-              index = 1;
-            }),
-            shouldOverrideUrlLoading: (controller, navigationAction) async {
-              return NavigationActionPolicy.CANCEL;
-            },
-            initialOptions: InAppWebViewGroupOptions(
-              crossPlatform: InAppWebViewOptions(
-                useShouldOverrideUrlLoading: true,
-              ),
-            ),
-            onLoadError: (controller, url, code, message) => setState(() {
-              index = 2;
-            }),
-            onEnterFullscreen: (controller) =>
-                SystemChrome.setPreferredOrientations(
-                    [DeviceOrientation.landscapeLeft]),
-            onExitFullscreen: (controller) =>
-                SystemChrome.setPreferredOrientations(
-                    [DeviceOrientation.portraitUp]),
-          ),
-          Container(
-            color: Constants.greyColor,
-            height: 200,
-            child: const Center(
-                child: Text(
-              'Upsss... Terjadi Kesalahan',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            )),
-          )
-        ],
-      ),
     );
   }
 }
