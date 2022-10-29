@@ -30,7 +30,7 @@ class _MovieScreenState extends State<MovieScreen> {
     if (mounted) {
       Wakelock.enable();
       getData(widget.movie.url!);
-      Constants.showAds ? ApplovinAdsWidget().showInterstitialAds() : null;
+      ApplovinAdsWidget().showInterstitialAds();
     }
   }
 

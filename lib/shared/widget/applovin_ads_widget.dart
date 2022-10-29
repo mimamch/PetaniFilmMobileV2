@@ -22,6 +22,7 @@ class ApplovinAdsWidget {
       }));
 
   Future<void> showInterstitialAds() async {
+    if (!Constants.showAds) return;
     bool isReady = (await AppLovinMAX.isInterstitialReady(
         Constants.applovinInterstitialAdUnitId))!;
     if (isReady) {
@@ -29,5 +30,10 @@ class ApplovinAdsWidget {
     } else {
       AppLovinMAX.loadInterstitial(Constants.applovinInterstitialAdUnitId);
     }
+  }
+
+  void initializeInterstitialAds() {
+    if (!Constants.showAds) return;
+    AppLovinMAX.loadInterstitial(Constants.applovinInterstitialAdUnitId);
   }
 }

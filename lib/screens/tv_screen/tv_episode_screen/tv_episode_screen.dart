@@ -29,7 +29,7 @@ class _TvEpisodeScreenState extends State<TvEpisodeScreen> {
     if (mounted) {
       Wakelock.enable();
       getData(widget.movie.url!);
-      Constants.showAds ? ApplovinAdsWidget().showInterstitialAds() : null;
+      ApplovinAdsWidget().showInterstitialAds();
     }
   }
 

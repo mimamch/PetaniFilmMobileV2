@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:petani_film_v2/routes.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
+import 'package:petani_film_v2/shared/widget/applovin_ads_widget.dart';
 
 void main() async {
   // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +32,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     Constants.showAds ? initializePlugin() : null;
+    Constants.showAds ? ApplovinAdsWidget().initializeInterstitialAds() : null;
   }
 
   Future<void> initializePlugin() async {
