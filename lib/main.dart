@@ -1,5 +1,6 @@
 import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:petani_film_v2/routes.dart';
@@ -7,17 +8,8 @@ import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/applovin_ads_widget.dart';
 
 void main() async {
-  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  // CachedNetworkImage.logLevel = CacheManagerLogLevel.none;
-  // await Hive.initFlutter();
-  // Hive.registerAdapter(UserAdapter());
-  // await Hive.openBox<User>('userBox');
-
-  // OneSignalServices().oneSignalInit();
-  // SystemChrome.setSystemUIOverlayStyle(
-  //     const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Hive.initFlutter();
   runApp(const MyApp());
 }
@@ -46,7 +38,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     // REMOVE
-    // FlutterNativeSplash.remove();
+    FlutterNativeSplash.remove();
     // REMOVE
     return MaterialApp.router(
       title: 'Petani Film',

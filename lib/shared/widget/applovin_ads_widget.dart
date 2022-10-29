@@ -6,23 +6,26 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 
 class ApplovinAdsWidget {
-  Widget bannerAds = MaxAdView(
-      adUnitId: Constants.applovinBannerAdUnitId,
-      adFormat: AdFormat.banner,
-      listener: AdViewAdListener(onAdLoadedCallback: (ad) {
-        debugPrint('Banner widget ad loaded from ${ad.networkName}');
-      }, onAdLoadFailedCallback: (adUnitId, error) {
-        debugPrint(
-            'Banner widget ad failed to load with error code ${error.code} and message: ${error.message}');
-      }, onAdClickedCallback: (ad) {
-        debugPrint('Banner widget ad clicked');
-      }, onAdExpandedCallback: (ad) {
-        debugPrint('Banner widget ad expanded');
-      }, onAdCollapsedCallback: (ad) {
-        debugPrint('Banner widget ad collapsed');
-      }, onAdRevenuePaidCallback: (ad) {
-        debugPrint('Banner widget ad revenue paid: ${ad.revenue}');
-      }));
+  Widget bannerAds = SizedBox(
+    height: 50,
+    child: MaxAdView(
+        adUnitId: Constants.applovinBannerAdUnitId,
+        adFormat: AdFormat.mrec,
+        listener: AdViewAdListener(onAdLoadedCallback: (ad) {
+          debugPrint('Banner widget ad loaded from ${ad.networkName}');
+        }, onAdLoadFailedCallback: (adUnitId, error) {
+          debugPrint(
+              'Banner widget ad failed to load with error code ${error.code} and message: ${error.message}');
+        }, onAdClickedCallback: (ad) {
+          debugPrint('Banner widget ad clicked');
+        }, onAdExpandedCallback: (ad) {
+          debugPrint('Banner widget ad expanded');
+        }, onAdCollapsedCallback: (ad) {
+          debugPrint('Banner widget ad collapsed');
+        }, onAdRevenuePaidCallback: (ad) {
+          debugPrint('Banner widget ad revenue paid: ${ad.revenue}');
+        })),
+  );
 
   Future<void> showInterstitialAds() async {
     if (!Constants.showAds) return;
@@ -31,9 +34,13 @@ class ApplovinAdsWidget {
     if (isReady) {
       Box box = await Hive.openBox('ads');
       DateTime? last = box.get('last_interstitial');
-      if (last == null ||
-          DateTime.now().difference(last).inMinutes >=
-              Constants.interstitialIntervalMinutes) {
+      if (last == null) {
+        box.put('last_interstitial',
+            DateTime.now().add(const Duration(minutes: 5)));
+        return;
+      }
+      if (DateTime.now().difference(last).inMinutes >=
+          Constants.interstitialIntervalMinutes) {
         box.put('last_interstitial', DateTime.now());
         AppLovinMAX.showInterstitial(Constants.applovinInterstitialAdUnitId);
       }
