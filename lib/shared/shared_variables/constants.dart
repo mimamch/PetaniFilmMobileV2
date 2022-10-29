@@ -18,7 +18,7 @@ class Constants {
 
   static const oneSignalAppId = 'a833874c-0e62-4c57-ac59-8eeac79f8bc4';
 
-  static bool showAds = false;
+  static bool showAds = true;
   static const applovinSdkKey =
       "eF97zKQbpUaTMGxDis07Jl75fR2uUtm5PnCTaJ_eTFzz0vA5EQlWw996BF6lu5AOv7I6TWfKw7kz4SZkWCboHz";
   static var applovinBannerAdUnitId =
@@ -27,4 +27,5 @@ class Constants {
       Platform.isAndroid ? "aa1c03016bdc905f" : "";
 
   static int interstitialRetryAttempt = 0;
+  static const int interstitialIntervalMinutes = 5;
 }

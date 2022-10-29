@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 
 class ApplovinAdsWidget {
@@ -28,7 +29,14 @@ class ApplovinAdsWidget {
     bool isReady = (await AppLovinMAX.isInterstitialReady(
         Constants.applovinInterstitialAdUnitId))!;
     if (isReady) {
-      AppLovinMAX.showInterstitial(Constants.applovinInterstitialAdUnitId);
+      Box box = await Hive.openBox('ads');
+      DateTime? last = box.get('last_interstitial');
+      if (last == null ||
+          DateTime.now().difference(last).inMinutes >=
+              Constants.interstitialIntervalMinutes) {
+        box.put('last_interstitial', DateTime.now());
+        AppLovinMAX.showInterstitial(Constants.applovinInterstitialAdUnitId);
+      }
     } else {
       AppLovinMAX.loadInterstitial(Constants.applovinInterstitialAdUnitId);
     }

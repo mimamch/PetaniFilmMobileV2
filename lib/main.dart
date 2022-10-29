@@ -1,6 +1,7 @@
 import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:petani_film_v2/routes.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/applovin_ads_widget.dart';
@@ -17,6 +18,7 @@ void main() async {
   // SystemChrome.setSystemUIOverlayStyle(
   //     const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
   runApp(const MyApp());
 }
 
