@@ -55,6 +55,8 @@ class _WebViewModalState extends State<WebViewModal> {
             initialOptions: InAppWebViewGroupOptions(
               crossPlatform: InAppWebViewOptions(
                 useShouldOverrideUrlLoading: true,
+                mediaPlaybackRequiresUserGesture: false,
+                preferredContentMode: UserPreferredContentMode.MOBILE,
               ),
             ),
             onLoadError: (controller, url, code, message) {
