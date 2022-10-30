@@ -12,11 +12,10 @@ class Constants {
   static const greenColor = Color(0xFF34c38f);
   static const redColor = Color(0xfff46a6a);
 
-  static const imageBaseUrl = 'http://mimamch.online:5002/images';
   static const apiBaseUrl = 'http://116.193.190.155:4001/v2';
   // static const apiBaseUrl = 'http://192.168.18.83:3000/v2';
 
-  static const oneSignalAppId = 'a833874c-0e62-4c57-ac59-8eeac79f8bc4';
+  static const oneSignalAppId = '538bd297-5880-4720-b2f8-0b86f283d2cc';
 
   static bool showAds = true;
   static const applovinSdkKey =
