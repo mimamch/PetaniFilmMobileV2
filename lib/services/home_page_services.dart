@@ -11,7 +11,7 @@ class HomePageServices {
           List<Map<String, dynamic>>.from(
               response.data['data']['last_uploaded']['data'] ?? []));
       final featured = MovieItemModel.fromArray(List<Map<String, dynamic>>.from(
-          response.data['data']['last_uploaded']['data'] ?? []));
+          response.data['data']['featured_post']['data'] ?? []));
       return {
         "total_pages":
             (response.data['data']?['last_uploaded']?['total_pages'] ?? 1)
