@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:marquee/marquee.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/services/home_page_services.dart';
@@ -9,6 +10,7 @@ import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/applovin_ads_widget.dart';
 import 'package:petani_film_v2/shared/widget/custom_text_field.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   List<MovieItemModel> featured = [];
   bool isLoading = false;
+  List<Map<String, dynamic>> announcements = [];
   int pageKey = 2;
   final TextEditingController searchController = TextEditingController();
 
@@ -46,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Map<String, dynamic> data =
           await HomePageServices().getHomePageItem(page: 1);
       featured = data['featured'] ?? [] as List<MovieItemModel>;
+      announcements = data['annoucements'] ?? [];
       if (data['current_page'] >= data['total_pages']) {
         _pagingController.appendLastPage(data['last_uploaded']);
       } else {
@@ -100,10 +104,10 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           child: ListView(
               controller: _scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: [
                 const Text(
-                  'Search',
+                  'Pencarian',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
@@ -140,8 +144,43 @@ class _HomeScreenState extends State<HomeScreen> {
                         )),
                   ],
                 ),
+                if (announcements.isNotEmpty) ...[
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  ...announcements
+                      .map((e) => GestureDetector(
+                            onTap: () async {
+                              if (e['action'] == 'launch_url' &&
+                                  e['link'] != null) {
+                                launchUrlString(e['link'],
+                                    mode: LaunchMode.externalApplication);
+                              }
+                            },
+                            child: Container(
+                              height: 25,
+                              color: e['color'] == null
+                                  ? Constants.greyColor
+                                  : Color(int.parse(e['color']
+                                      .toString()
+                                      .replaceAll('#', '0xff'))),
+                              padding: const EdgeInsets.symmetric(vertical: 3),
+                              margin: const EdgeInsets.symmetric(vertical: 3),
+                              child: Marquee(
+                                text: e['label'] ?? '',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                blankSpace: size.width,
+                                pauseAfterRound: const Duration(seconds: 1),
+                                startAfter: const Duration(seconds: 1),
+                              ),
+                            ),
+                          ))
+                      .toList(),
+                ],
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 if (featured.isNotEmpty) ...[
                   const Text(
@@ -151,16 +190,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  CarouselSlider.builder(
-                      itemCount: featured.length,
-                      itemBuilder: (context, index, realIndex) {
-                        return HomeFeaturedItem(movie: featured[index]);
-                      },
-                      options: CarouselOptions(
-                        height: 150,
-                        autoPlay: true,
-                        viewportFraction: 0.3,
-                      )),
+                  SizedBox(
+                    height: size.height / 4,
+                    child: CarouselSlider.builder(
+                        itemCount: featured.length,
+                        itemBuilder: (context, index, realIndex) {
+                          return HomeFeaturedItem(movie: featured[index]);
+                        },
+                        options: CarouselOptions(
+                          aspectRatio: 9 / 16,
+                          autoPlay: true,
+                          viewportFraction: 0.35,
+                          initialPage: 0,
+                        )),
+                  ),
                   const SizedBox(
                     height: 20,
                   ),

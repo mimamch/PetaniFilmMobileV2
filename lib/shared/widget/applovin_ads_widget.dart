@@ -35,8 +35,10 @@ class ApplovinAdsWidget {
       Box box = await Hive.openBox('ads');
       DateTime? last = box.get('last_interstitial');
       if (last == null) {
-        box.put('last_interstitial',
-            DateTime.now().add(const Duration(minutes: 5)));
+        box.put(
+            'last_interstitial',
+            DateTime.now()
+                .add(Duration(minutes: Constants.interstitialIntervalMinutes)));
         return;
       }
       if (DateTime.now().difference(last).inMinutes >=

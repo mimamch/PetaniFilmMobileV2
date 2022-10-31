@@ -19,6 +19,8 @@ class HomePageServices {
         "current_page":
             (response.data['data']?['last_uploaded']?['current_page'] ?? 1)
                 as int,
+        "annoucements": List<Map<String, dynamic>>.from(
+            response.data['data']['announcements'] ?? []),
         "last_uploaded": lastUploaded,
         "featured": featured
       };
