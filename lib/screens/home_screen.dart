@@ -1,14 +1,12 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:marquee/marquee.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
+import 'package:petani_film_v2/screens/components/search_delegate.dart';
 import 'package:petani_film_v2/services/home_page_services.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/applovin_ads_widget.dart';
-import 'package:petani_film_v2/shared/widget/custom_text_field.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -89,7 +87,31 @@ class _HomeScreenState extends State<HomeScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
-          title: const Text('PETANI FILM'),
+          title: Row(
+            children: [
+              Image.asset(
+                'assets/images/splash_icon.png',
+                width: 30,
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              const Text('PETANI FILM')
+            ],
+          ),
+          centerTitle: false,
+          actions: [
+            IconButton(
+                color: Constants.whiteColor,
+                onPressed: () {
+                  showSearch(
+                      context: context, delegate: CustomSearchDelegate());
+                },
+                icon: const Icon(
+                  Icons.search,
+                  color: Constants.whiteColor,
+                )),
+          ],
         ),
         bottomNavigationBar:
             Constants.showAds ? ApplovinAdsWidget().bannerAds : null,
@@ -106,44 +128,44 @@ class _HomeScreenState extends State<HomeScreen> {
               controller: _scrollController,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               children: [
-                const Text(
-                  'Pencarian',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomTextField(
-                          controller: searchController,
-                          onSubmitted: (value) {
-                            if (searchController.text.isEmpty) return;
-                            context.pushNamed('search',
-                                params: {"query": searchController.text});
-                          },
-                          inputType: TextInputType.text,
-                          maxLines: 1,
-                          action: TextInputAction.go,
-                          placeholder: 'Cari Film / Series'),
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    IconButton(
-                        color: Constants.whiteColor,
-                        onPressed: () {
-                          if (searchController.text.isEmpty) return;
-                          context.pushNamed('search',
-                              params: {"query": searchController.text});
-                        },
-                        icon: const Icon(
-                          Icons.search,
-                          color: Constants.whiteColor,
-                        )),
-                  ],
-                ),
+                // const Text(
+                //   'Pencarian',
+                //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                // ),
+                // const SizedBox(
+                //   height: 10,
+                // ),
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: CustomTextField(
+                //           controller: searchController,
+                //           onSubmitted: (value) {
+                //             if (searchController.text.isEmpty) return;
+                //             context.pushNamed('search',
+                //                 params: {"query": searchController.text});
+                //           },
+                //           inputType: TextInputType.text,
+                //           maxLines: 1,
+                //           action: TextInputAction.go,
+                //           placeholder: 'Cari Film / Series'),
+                //     ),
+                //     const SizedBox(
+                //       width: 5,
+                //     ),
+                //     IconButton(
+                //         color: Constants.whiteColor,
+                //         onPressed: () {
+                //           if (searchController.text.isEmpty) return;
+                //           context.pushNamed('search',
+                //               params: {"query": searchController.text});
+                //         },
+                //         icon: const Icon(
+                //           Icons.search,
+                //           color: Constants.whiteColor,
+                //         )),
+                //   ],
+                // ),
                 if (announcements.isNotEmpty) ...[
                   const SizedBox(
                     height: 10,
@@ -180,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       .toList(),
                 ],
                 const SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 if (featured.isNotEmpty) ...[
                   const Text(
@@ -190,19 +212,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(
                     height: 10,
                   ),
-                  SizedBox(
-                    height: size.height / 4,
-                    child: CarouselSlider.builder(
-                        itemCount: featured.length,
-                        itemBuilder: (context, index, realIndex) {
-                          return HomeFeaturedItem(movie: featured[index]);
-                        },
-                        options: CarouselOptions(
-                          aspectRatio: 9 / 16,
-                          autoPlay: true,
-                          viewportFraction: 0.35,
-                          initialPage: 0,
-                        )),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      children: [
+                        ...(featured
+                            .map((e) => Container(
+                                  margin: const EdgeInsets.only(right: 10),
+                                  height: 150,
+                                  child: HomeFeaturedItem(movie: e),
+                                ))
+                            .toList())
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 20,

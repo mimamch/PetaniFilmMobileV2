@@ -10,13 +10,21 @@ class HiveService {
   Future<void> addBoxes(
       {required List items,
       required String boxName,
-      Duration duration = const Duration(hours: 6)}) async {
+      Duration? duration}) async {
     final openBox = await Hive.openBox(boxName);
-    final exp = await Hive.openBox<DateTime>('cache_expired');
-    exp.put(boxName, DateTime.now().add(duration));
+    if (duration != null) {
+      final exp = await Hive.openBox<DateTime>('cache_expired');
+      exp.put(boxName, DateTime.now().add(duration));
+    }
     for (var item in items) {
       openBox.add(item);
     }
+  }
+
+  Future<void> deleteIndex(
+      {required int index, required String boxName, Duration? duration}) async {
+    final openBox = await Hive.openBox(boxName);
+    await openBox.deleteAt(index);
   }
 
   Future<void> addBoxMap(
@@ -40,12 +48,11 @@ class HiveService {
     openBox.put(boxKey, item);
   }
 
-  Future<List<Map<String, dynamic>>> getBoxes(String boxName) async {
-    List<Map<String, dynamic>> boxList = [];
+  Future<List<dynamic>> getBoxValues(String boxName) async {
+    List<dynamic> boxList = [];
     final openBox = await Hive.openBox(boxName);
-
     for (var element in openBox.values) {
-      boxList.add(Map<String, dynamic>.from(element));
+      boxList.add(element);
     }
     return boxList;
   }

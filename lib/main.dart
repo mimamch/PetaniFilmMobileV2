@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
           titleTextStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           centerTitle: true,
           elevation: 0,
-          backgroundColor: Constants.blackColor,
+          color: Constants.blackColor,
         ),
         scaffoldBackgroundColor: Constants.blackColor.withOpacity(0.5),
       ),
