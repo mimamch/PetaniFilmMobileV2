@@ -11,9 +11,10 @@ class Constants {
   static const greyColor = Color(0xff74788d);
   static const greenColor = Color(0xFF34c38f);
   static const redColor = Color(0xfff46a6a);
+  static const purpleColor = Color(0xFF7E349D);
 
   static const apiBaseUrl = 'http://116.193.190.155:4001/v2';
-  // static const apiBaseUrl = 'http://192.168.4.231:4001/v2';
+  // static const apiBaseUrl = 'http://192.168.18.83:3000/v2';
 
   // INIT CONFIGURATION
   static void setAppConfiguration({

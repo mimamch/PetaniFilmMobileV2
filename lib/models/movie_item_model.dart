@@ -19,6 +19,8 @@ class MovieItemModel {
   final List<MovieItemModel>? relatedPost;
   final String? quality;
   final String? currentEpisode;
+  final int? currentPlayer;
+  final String? note;
   MovieItemModel({
     this.title,
     this.duration,
@@ -40,6 +42,8 @@ class MovieItemModel {
     this.quality,
     this.episodes,
     this.currentEpisode,
+    this.currentPlayer,
+    this.note,
   });
 
   factory MovieItemModel.fromJson(Map<String, dynamic> json) {
@@ -65,32 +69,38 @@ class MovieItemModel {
       streamingLink: json['streaming_link'],
       totalStreamingServer: (json['total_streaming_server'] ?? 0) as int,
       quality: json['quality'],
+      currentEpisode: json['current_episode'],
+      currentPlayer: json['current_player'],
+      note: json['note'],
     );
   }
   static List<MovieItemModel> fromArray(List<Map<String, dynamic>> array) {
     return array.map((e) => MovieItemModel.fromJson(e)).toList();
   }
 
-  copyWith(
-      {String? streamingLink,
-      String? url,
-      String? title,
-      String? duration,
-      String? posterUrl,
-      List<String>? genres,
-      double? rating,
-      String? trailer,
-      List<String>? actors,
-      String? country,
-      String? description,
-      List<Map<String, dynamic>>? downloadLinks,
-      List<MovieItemModel>? relatedPost,
-      String? releaseDate,
-      int? totalStreamingServer,
-      String? year,
-      String? quality,
-      List<Map<String, dynamic>>? episodes,
-      String? currentEpisode}) {
+  copyWith({
+    String? streamingLink,
+    String? url,
+    String? title,
+    String? duration,
+    String? posterUrl,
+    List<String>? genres,
+    double? rating,
+    String? trailer,
+    List<String>? actors,
+    String? country,
+    String? description,
+    List<Map<String, dynamic>>? downloadLinks,
+    List<MovieItemModel>? relatedPost,
+    String? releaseDate,
+    int? totalStreamingServer,
+    String? year,
+    String? quality,
+    List<Map<String, dynamic>>? episodes,
+    String? currentEpisode,
+    int? currentPlayer,
+    String? note,
+  }) {
     return MovieItemModel(
       title: title ?? this.title,
       duration: duration ?? this.duration,
@@ -112,6 +122,8 @@ class MovieItemModel {
       quality: quality ?? this.quality,
       episodes: episodes ?? this.episodes,
       currentEpisode: currentEpisode ?? this.currentEpisode,
+      currentPlayer: currentPlayer ?? this.currentPlayer,
+      note: note ?? this.note,
     );
   }
 }

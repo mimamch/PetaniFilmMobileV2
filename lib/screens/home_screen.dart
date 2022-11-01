@@ -22,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = false;
   List<Map<String, dynamic>> announcements = [];
   int pageKey = 2;
+  Map<String, dynamic>? title;
   final TextEditingController searchController = TextEditingController();
 
   final PagingController<int, MovieItemModel> _pagingController =
@@ -48,6 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
           await HomePageServices().getHomePageItem(page: 1);
       featured = data['featured'] ?? [] as List<MovieItemModel>;
       announcements = data['annoucements'] ?? [];
+      title = {
+        "title1": data['title1'] ?? "Rekomendasi",
+        "title2": data['title2'] ?? "Baru Diperbarui",
+      };
       if (data['current_page'] >= data['total_pages']) {
         _pagingController.appendLastPage(data['last_uploaded']);
       } else {
@@ -181,11 +186,14 @@ class _HomeScreenState extends State<HomeScreen> {
                             },
                             child: Container(
                               height: 25,
-                              color: e['color'] == null
-                                  ? Constants.greyColor
-                                  : Color(int.parse(e['color']
-                                      .toString()
-                                      .replaceAll('#', '0xff'))),
+                              decoration: BoxDecoration(
+                                color: e['color'] == null
+                                    ? Constants.greyColor
+                                    : Color(int.parse(e['color']
+                                        .toString()
+                                        .replaceAll('#', '0xff'))),
+                                borderRadius: BorderRadius.circular(3),
+                              ),
                               padding: const EdgeInsets.symmetric(vertical: 3),
                               margin: const EdgeInsets.symmetric(vertical: 3),
                               child: Marquee(
@@ -205,10 +213,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 5,
                 ),
                 if (featured.isNotEmpty) ...[
-                  const Text(
-                    'Rekomendasi',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
+                  if (title != null && title?['title1'] != null)
+                    Text(
+                      title!['title1'],
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -231,10 +241,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 20,
                   ),
                 ],
-                const Text(
-                  'Baru Diperbarui',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
+                if (title != null && title?['title2'] != null)
+                  Text(
+                    title!['title2'],
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                 const SizedBox(
                   height: 10,
                 ),

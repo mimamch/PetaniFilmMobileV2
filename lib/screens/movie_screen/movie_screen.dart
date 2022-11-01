@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
+import 'package:petani_film_v2/screens/components/movie_detail_section.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/services/movie_services.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
@@ -22,6 +22,7 @@ class _MovieScreenState extends State<MovieScreen> {
   MovieItemModel? movieTemp;
   String? error;
   int currentServer = 0;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -36,20 +37,23 @@ class _MovieScreenState extends State<MovieScreen> {
   Future<MovieItemModel> getData(url) async {
     try {
       error = null;
+      isLoading = true;
       if (widget.movie.url == null) throw 'Terjadi Kesalahan';
       MovieItemModel movieDetail = await MovieServices().getMovieDetail(url);
       movieTemp = movieDetail;
+      isLoading = false;
       setState(() {});
       return movieDetail;
     } catch (e) {
       error = e.toString();
+      isLoading = false;
       setState(() {});
       return MovieItemModel();
     }
   }
 
   void changeStreamServer(int player) {
-    if (player == currentServer) return;
+    if (player == currentServer || isLoading) return;
     setState(() {
       movieTemp = movieTemp?.copyWith(streamingLink: null);
       error = null;
@@ -116,36 +120,40 @@ class _ShowDataState extends State<ShowData> {
                   ),
                 ),
               )
-            : widget.currentServer == 0
-                ? Container(
-                    color: Constants.greyColor,
-                    height: 200,
-                    child: const Center(
-                        child: Text(
-                      'Plih Server',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    )),
-                  )
-                : error != null
+            : widget.movie.streamingLink!.isEmpty
+                ? Container()
+                : widget.currentServer == 0
                     ? Container(
-                        color: Constants.blackColor,
-                        height: 150,
-                        child: Text(error!),
+                        color: Constants.greyColor,
+                        height: 200,
+                        child: const Center(
+                            child: Text(
+                          'Plih Server',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        )),
                       )
-                    : WebViewModal(
-                        streamingLink: widget.movie.streamingLink!,
-                      ),
+                    : error != null
+                        ? Container(
+                            color: Constants.blackColor,
+                            height: 150,
+                            child: Text(error!),
+                          )
+                        : WebViewModal(
+                            streamingLink: widget.movie.streamingLink!,
+                          ),
         const SizedBox(
           height: 15,
         ),
-        const Text(
-          'Pilih Server Streaming',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        if (widget.movie.totalStreamingServer != null &&
+            widget.movie.totalStreamingServer! > 0)
+          const Text(
+            'Pilih Server Streaming',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
         const SizedBox(
           height: 5,
         ),
@@ -219,96 +227,7 @@ class _ShowDataState extends State<ShowData> {
             height: 8,
           ),
         ],
-        const Divider(
-          color: Constants.whiteColor,
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        const Text(
-          'Genre',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Wrap(
-            runSpacing: 5,
-            children: (widget.movie.genres ?? [])
-                .map((e) => Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 3),
-                      margin: const EdgeInsets.symmetric(horizontal: 2),
-                      decoration: BoxDecoration(
-                          color: Constants.primaryblueColor,
-                          borderRadius: BorderRadius.circular(3)),
-                      child: Text(
-                        e,
-                      ),
-                    ))
-                .toList()),
-        const SizedBox(
-          height: 8,
-        ),
-        const Text(
-          'Rating',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        if (widget.movie.rating != null)
-          RatingBar.builder(
-            itemCount: 5,
-            initialRating: widget.movie.rating! / 2,
-            itemSize: 20,
-            itemBuilder: (context, _) => const Icon(
-              Icons.star,
-              color: Colors.amber,
-            ),
-            onRatingUpdate: (value) {},
-          ),
-        const SizedBox(
-          height: 8,
-        ),
-        const Text(
-          'Tanggal Rilis',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(widget.movie.releaseDate ?? '-'),
-        const SizedBox(
-          height: 8,
-        ),
-        if (widget.movie.country != null) ...[
-          const Text(
-            'Negara',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(widget.movie.country ?? '-'),
-          const SizedBox(
-            height: 8,
-          ),
-        ],
-        const Text(
-          'Sinopsis',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(widget.movie.description ?? '-'),
-        const SizedBox(
-          height: 15,
-        ),
-        const Divider(
-          color: Constants.whiteColor,
-        ),
+        MovieDetailSection(movie: widget.movie),
         const Text(
           'Film Terkait',
           style: TextStyle(

@@ -22,7 +22,9 @@ class HomePageServices {
         "annoucements": List<Map<String, dynamic>>.from(
             response.data['data']['announcements'] ?? []),
         "last_uploaded": lastUploaded,
-        "featured": featured
+        "featured": featured,
+        "title1": response.data['data']['title1'],
+        "title2": response.data['data']['title2'],
       };
     } on DioError catch (e) {
       if (e.response == null) {
