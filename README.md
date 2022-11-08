@@ -1,16 +1,8 @@
 # petani_film_v2
 
-A new Flutter project.
+Petani Film App - Streaming & Download Movies for Free
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshot
+![Screenshot_1667313110](https://user-images.githubusercontent.com/38609616/200576197-cdbc6b97-24fc-49cb-bfda-210db6d8803b.png)
+![Screenshot_1667040697](https://user-images.githubusercontent.com/38609616/200576217-9bce960b-278c-4047-8462-4a6157ec3b2d.png)
+![Screenshot_1667313107](https://user-images.githubusercontent.com/38609616/200576228-7a4958c0-04b0-4c65-b68a-f8b38ed4d783.png)
