@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 class AppCofigurationServices {
   static Future<void> initAssets() async {
     try {
-      // await HiveService().clearBoxes(boxName: 'app_configuration');
+      await HiveService().clearBoxes(boxName: 'app_configuration');
       var cache = await HiveService().getBoxesKey('app_configuration', 'main');
       if (cache != null) {
         Constants.setAppConfiguration(
@@ -15,6 +15,7 @@ class AppCofigurationServices {
           applovinBannerAdUnitId: cache['ads']['applovin_banner_ad_unit_id'],
           applovinInterstitialAdUnitId: cache['ads']
               ['applovin_interstitial_ad_unit_id'],
+          token: cache['credentials']['token'],
         );
       } else {
         Response response =
@@ -37,6 +38,7 @@ class AppCofigurationServices {
             ['applovin_interstitial_ad_unit_id'],
         interstitialIntervalMinutes: cache['ads']
             ['interstitial_interval_minutes'],
+        token: cache['credentials']?['token'],
       );
       return;
     } catch (e) {

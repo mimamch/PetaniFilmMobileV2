@@ -13,7 +13,7 @@ class Constants {
   static const redColor = Color(0xfff46a6a);
   static const purpleColor = Color(0xFF7E349D);
 
-  static const apiBaseUrl = 'http://116.193.190.155:4001/v2';
+  static const apiBaseUrl = 'https://api.petanifilm.my.id/v2';
   // static const apiBaseUrl = 'http://192.168.18.83:3000/v2';
 
   // INIT CONFIGURATION
@@ -24,6 +24,7 @@ class Constants {
     Map? applovinBannerAdUnitId,
     Map? applovinInterstitialAdUnitId,
     int? interstitialIntervalMinutes,
+    String? token,
   }) {
     Constants.oneSignalAppId = oneSignalAppId ?? '';
 
@@ -36,10 +37,13 @@ class Constants {
         ? (applovinInterstitialAdUnitId?['android'] ?? '')
         : (applovinInterstitialAdUnitId?['ios'] ?? '');
     Constants.interstitialIntervalMinutes = interstitialIntervalMinutes ?? 10;
+    Constants.token = token ?? '';
   }
 
   // ONE SIGNAL
   static String oneSignalAppId = '538bd297-5880-4720-b2f8-0b86f283d2cc';
+
+  static String token = '';
 
   // APPLOVIN ADS
   // static bool showAds = true;

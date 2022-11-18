@@ -5,9 +5,10 @@ import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 class MovieServices {
   Future<MovieItemModel> getMovieDetail(String url) async {
     try {
-      Response response = await Dio().post(
-          '${Constants.apiBaseUrl}/get-movie-by-link/',
-          data: {"link": url});
+      Response response = await Dio(BaseOptions(
+              headers: {'authorization': 'Bearer ${Constants.token}'}))
+          .post('${Constants.apiBaseUrl}/get-movie-by-link/',
+              data: {"link": url});
       return MovieItemModel.fromJson(response.data['data']);
     } on DioError catch (e) {
       if (e.response == null) {
@@ -21,7 +22,8 @@ class MovieServices {
 
   Future<MovieItemModel> getTvDetail(String url) async {
     try {
-      Response response = await Dio()
+      Response response = await Dio(BaseOptions(
+              headers: {'authorization': 'Bearer ${Constants.token}'}))
           .post('${Constants.apiBaseUrl}/get-tv-by-link/', data: {"link": url});
       return MovieItemModel.fromJson(response.data['data']);
     } on DioError catch (e) {
@@ -36,7 +38,8 @@ class MovieServices {
 
   Future<MovieItemModel> getTvEpisode(String url) async {
     try {
-      Response response = await Dio()
+      Response response = await Dio(BaseOptions(
+              headers: {'authorization': 'Bearer ${Constants.token}'}))
           .post('${Constants.apiBaseUrl}/get-tv-episode/', data: {"link": url});
       return MovieItemModel.fromJson(response.data['data']);
     } on DioError catch (e) {
