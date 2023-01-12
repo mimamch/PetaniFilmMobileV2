@@ -30,7 +30,9 @@ class _MovieScreenState extends State<MovieScreen> {
     if (mounted) {
       Wakelock.enable();
       getData(widget.movie.url!);
-      ApplovinAdsWidget().showInterstitialAds();
+      if (Constants.applovinInterstitialAdUnitId.isNotEmpty) {
+        ApplovinAdsWidget().showInterstitialAds();
+      }
     }
   }
 
@@ -67,7 +69,9 @@ class _MovieScreenState extends State<MovieScreen> {
     return Scaffold(
         appBar: AppBar(title: Text(widget.movie.title ?? 'Tanpa Judul')),
         bottomNavigationBar:
-            Constants.showAds ? ApplovinAdsWidget().bannerAds : null,
+            Constants.showAds && Constants.applovinBannerAdUnitId.isNotEmpty
+                ? ApplovinAdsWidget().bannerAds
+                : null,
         body: error == null && movieTemp == null
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -227,6 +231,7 @@ class _ShowDataState extends State<ShowData> {
             height: 8,
           ),
         ],
+        ApplovinAdsWidget().mercAds,
         MovieDetailSection(movie: widget.movie),
         const Text(
           'Film Terkait',

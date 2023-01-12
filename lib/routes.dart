@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
+import 'package:petani_film_v2/screens/genre_screen/genre_screen.dart';
 import 'package:petani_film_v2/screens/home_screen.dart';
 import 'package:petani_film_v2/screens/movie_screen/movie_screen.dart';
 import 'package:petani_film_v2/screens/search_screen/search_screen.dart';
@@ -14,6 +15,15 @@ final GoRouter mainRouter = GoRouter(
       name: 'home',
       builder: (BuildContext context, GoRouterState state) {
         return const HomeScreen();
+      },
+    ),
+    GoRoute(
+      path: '/${GenreScreen.routeName}',
+      name: GenreScreen.routeName,
+      builder: (BuildContext context, GoRouterState state) {
+        return GenreScreen(
+          genre: state.queryParams,
+        );
       },
     ),
     GoRoute(

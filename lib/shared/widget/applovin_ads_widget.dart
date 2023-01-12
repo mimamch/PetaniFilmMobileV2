@@ -26,9 +26,33 @@ class ApplovinAdsWidget {
           debugPrint('Banner widget ad revenue paid: ${ad.revenue}');
         })),
   );
+  Widget mercAds = SizedBox(
+    // height: 50,
+    child: Constants.applovinMrecAdUnitId.isEmpty
+        ? null
+        : MaxAdView(
+            adUnitId: Constants.applovinMrecAdUnitId,
+            adFormat: AdFormat.mrec,
+            listener: AdViewAdListener(onAdLoadedCallback: (ad) {
+              debugPrint('Banner widget ad loaded from ${ad.networkName}');
+            }, onAdLoadFailedCallback: (adUnitId, error) {
+              debugPrint(
+                  'Banner widget ad failed to load with error code ${error.code} and message: ${error.message}');
+            }, onAdClickedCallback: (ad) {
+              debugPrint('Banner widget ad clicked');
+            }, onAdExpandedCallback: (ad) {
+              debugPrint('Banner widget ad expanded');
+            }, onAdCollapsedCallback: (ad) {
+              debugPrint('Banner widget ad collapsed');
+            }, onAdRevenuePaidCallback: (ad) {
+              debugPrint('Banner widget ad revenue paid: ${ad.revenue}');
+            })),
+  );
 
   Future<void> showInterstitialAds() async {
-    if (!Constants.showAds) return;
+    if (!Constants.showAds || Constants.applovinInterstitialAdUnitId.isEmpty) {
+      return;
+    }
     bool isReady = (await AppLovinMAX.isInterstitialReady(
         Constants.applovinInterstitialAdUnitId))!;
     if (isReady) {

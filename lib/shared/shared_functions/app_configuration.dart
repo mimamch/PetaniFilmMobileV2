@@ -34,6 +34,7 @@ class AppCofigurationServices {
         showAds: cache['ads']['show_ads'],
         applovinSdkKey: cache['ads']['applovin_sdk_key'],
         applovinBannerAdUnitId: cache['ads']['applovin_banner_ad_unit_id'],
+        applovinMrecAdUnitId: cache['ads']['applovin_merc_ad_unit_id'],
         applovinInterstitialAdUnitId: cache['ads']
             ['applovin_interstitial_ad_unit_id'],
         interstitialIntervalMinutes: cache['ads']

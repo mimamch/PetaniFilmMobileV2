@@ -5,6 +5,7 @@ class MovieItemModel {
   final String? posterUrl;
   final double? rating;
   final List<String>? genres;
+  final List<Map>? genres2;
   final String? type;
   final String? trailer;
   final int? totalStreamingServer;
@@ -25,6 +26,7 @@ class MovieItemModel {
     this.title,
     this.duration,
     this.genres,
+    this.genres2,
     this.posterUrl,
     this.rating,
     this.trailer,
@@ -47,10 +49,12 @@ class MovieItemModel {
   });
 
   factory MovieItemModel.fromJson(Map<String, dynamic> json) {
+    // print(List<Map>.from(json['detail']?['genres2'] ?? []));
     return MovieItemModel(
       title: json['title'],
       duration: json['duration'],
       genres: List<String>.from(json['detail']?['genres'] ?? []),
+      genres2: List<Map>.from(json['detail']?['genres2'] ?? []),
       posterUrl: json['poster_url'],
       rating: double.tryParse((json['detail']?['rating']).toString()),
       trailer: json['trailer'],
@@ -85,6 +89,7 @@ class MovieItemModel {
     String? duration,
     String? posterUrl,
     List<String>? genres,
+    List<Map>? genres2,
     double? rating,
     String? trailer,
     List<String>? actors,
@@ -105,6 +110,7 @@ class MovieItemModel {
       title: title ?? this.title,
       duration: duration ?? this.duration,
       genres: genres ?? this.genres,
+      genres2: genres2 ?? this.genres2,
       posterUrl: posterUrl ?? this.posterUrl,
       rating: rating ?? this.rating,
       trailer: trailer ?? this.trailer,

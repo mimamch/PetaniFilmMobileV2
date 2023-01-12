@@ -22,6 +22,7 @@ class Constants {
     bool? showAds,
     String? applovinSdkKey,
     Map? applovinBannerAdUnitId,
+    Map? applovinMrecAdUnitId,
     Map? applovinInterstitialAdUnitId,
     int? interstitialIntervalMinutes,
     String? token,
@@ -33,6 +34,9 @@ class Constants {
     Constants.applovinBannerAdUnitId = Platform.isAndroid
         ? (applovinBannerAdUnitId?['android'] ?? '')
         : (applovinBannerAdUnitId?['ios'] ?? '');
+    Constants.applovinMrecAdUnitId = Platform.isAndroid
+        ? (applovinMrecAdUnitId?['android'] ?? '')
+        : (applovinMrecAdUnitId?['ios'] ?? '');
     Constants.applovinInterstitialAdUnitId = Platform.isAndroid
         ? (applovinInterstitialAdUnitId?['android'] ?? '')
         : (applovinInterstitialAdUnitId?['ios'] ?? '');
@@ -59,6 +63,7 @@ class Constants {
   static bool showAds = false;
   static String applovinSdkKey = "";
   static String applovinBannerAdUnitId = '';
+  static String applovinMrecAdUnitId = '';
   static String applovinInterstitialAdUnitId = '';
   static int interstitialRetryAttempt = 0;
   static int interstitialIntervalMinutes = 10;

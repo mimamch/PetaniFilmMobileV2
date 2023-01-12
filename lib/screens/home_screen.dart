@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:marquee/marquee.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/screens/components/search_delegate.dart';
+import 'package:petani_film_v2/screens/genre_screen/genre_screen.dart';
 import 'package:petani_film_v2/services/home_page_services.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 import 'package:petani_film_v2/shared/widget/applovin_ads_widget.dart';
@@ -23,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Map<String, dynamic>> announcements = [];
   int pageKey = 2;
   Map<String, dynamic>? title;
+  List<Map> genres = [];
   final TextEditingController searchController = TextEditingController();
 
   final PagingController<int, MovieItemModel> _pagingController =
@@ -53,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         "title1": data['title1'] ?? "Rekomendasi",
         "title2": data['title2'] ?? "Baru Diperbarui",
       };
+      genres = List<Map>.from(data['genres']);
       if (data['current_page'] >= data['total_pages']) {
         _pagingController.appendLastPage(data['last_uploaded']);
       } else {
@@ -119,7 +123,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         bottomNavigationBar:
-            Constants.showAds ? ApplovinAdsWidget().bannerAds : null,
+            Constants.showAds && Constants.applovinBannerAdUnitId.isNotEmpty
+                ? ApplovinAdsWidget().bannerAds
+                : null,
         body: RefreshIndicator(
           onRefresh: () async {
             featured.clear();
@@ -209,6 +215,47 @@ class _HomeScreenState extends State<HomeScreen> {
                           ))
                       .toList(),
                 ],
+                const SizedBox(
+                  height: 5,
+                ),
+                if (genres.isNotEmpty) ...[
+                  if (title != null && title?['title1'] != null)
+                    const Text(
+                      'Berdasarkan Genre',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      children: (genres)
+                          .map((e) => GestureDetector(
+                                onTap: () {
+                                  context.pushNamed(GenreScreen.routeName,
+                                      queryParams: Map<String, String>.from(e));
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 3),
+                                  margin:
+                                      const EdgeInsets.symmetric(horizontal: 2),
+                                  decoration: BoxDecoration(
+                                      color: Constants.primaryblueColor,
+                                      borderRadius: BorderRadius.circular(3)),
+                                  child: Text(
+                                    e['label'] ?? '',
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                  ),
+                ],
+
                 const SizedBox(
                   height: 5,
                 ),

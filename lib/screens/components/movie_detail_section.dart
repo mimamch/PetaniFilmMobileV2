@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:petani_film_v2/models/movie_item_model.dart';
+import 'package:petani_film_v2/screens/genre_screen/genre_screen.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
 
 class MovieDetailSection extends StatelessWidget {
@@ -29,16 +31,22 @@ class MovieDetailSection extends StatelessWidget {
         ),
         Wrap(
             runSpacing: 5,
-            children: (movie.genres ?? [])
-                .map((e) => Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 3),
-                      margin: const EdgeInsets.symmetric(horizontal: 2),
-                      decoration: BoxDecoration(
-                          color: Constants.primaryblueColor,
-                          borderRadius: BorderRadius.circular(3)),
-                      child: Text(
-                        e,
+            children: (movie.genres2 ?? [])
+                .map((e) => GestureDetector(
+                      onTap: () {
+                        context.pushNamed(GenreScreen.routeName,
+                            queryParams: Map<String, String>.from(e));
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 3),
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
+                        decoration: BoxDecoration(
+                            color: Constants.primaryblueColor,
+                            borderRadius: BorderRadius.circular(3)),
+                        child: Text(
+                          e['label'] ?? '',
+                        ),
                       ),
                     ))
                 .toList()),

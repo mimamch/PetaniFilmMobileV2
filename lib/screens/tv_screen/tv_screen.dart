@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petani_film_v2/models/movie_item_model.dart';
+import 'package:petani_film_v2/screens/components/movie_detail_section.dart';
 import 'package:petani_film_v2/screens/components/movie_item.dart';
 import 'package:petani_film_v2/services/movie_services.dart';
 import 'package:petani_film_v2/shared/shared_variables/constants.dart';
@@ -64,7 +64,9 @@ class _TvScreenState extends State<TvScreen> {
     return Scaffold(
         appBar: AppBar(title: Text(widget.movie.title ?? 'Tanpa Judul')),
         bottomNavigationBar:
-            Constants.showAds ? ApplovinAdsWidget().bannerAds : null,
+            Constants.showAds && Constants.applovinBannerAdUnitId.isNotEmpty
+                ? ApplovinAdsWidget().bannerAds
+                : null,
         body: error == null && movieTemp == null
             ? const Center(
                 child: CircularProgressIndicator(),
@@ -201,96 +203,98 @@ class _ShowDataState extends State<ShowData> {
             height: 8,
           ),
         ],
-        const Divider(
-          color: Constants.whiteColor,
-        ),
-        const SizedBox(
-          height: 8,
-        ),
-        const Text(
-          'Genre',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Wrap(
-            runSpacing: 5,
-            children: (widget.movie.genres ?? [])
-                .map((e) => Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 3),
-                      margin: const EdgeInsets.symmetric(horizontal: 2),
-                      decoration: BoxDecoration(
-                          color: Constants.primaryblueColor,
-                          borderRadius: BorderRadius.circular(3)),
-                      child: Text(
-                        e,
-                      ),
-                    ))
-                .toList()),
-        const SizedBox(
-          height: 8,
-        ),
-        const Text(
-          'Rating',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        if (widget.movie.rating != null)
-          RatingBar.builder(
-            itemCount: 5,
-            initialRating: widget.movie.rating! / 2,
-            itemSize: 20,
-            itemBuilder: (context, _) => const Icon(
-              Icons.star,
-              color: Colors.amber,
-            ),
-            onRatingUpdate: (value) {},
-          ),
-        const SizedBox(
-          height: 8,
-        ),
-        const Text(
-          'Tanggal Rilis',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(widget.movie.releaseDate ?? '-'),
-        const SizedBox(
-          height: 8,
-        ),
-        if (widget.movie.country != null) ...[
-          const Text(
-            'Negara',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(widget.movie.country ?? '-'),
-          const SizedBox(
-            height: 8,
-          ),
-        ],
-        const Text(
-          'Sinopsis',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(widget.movie.description ?? '-'),
-        const SizedBox(
-          height: 15,
-        ),
-        const Divider(
-          color: Constants.whiteColor,
-        ),
+        // const Divider(
+        //   color: Constants.whiteColor,
+        // ),
+        // const SizedBox(
+        //   height: 8,
+        // ),
+        ApplovinAdsWidget().mercAds,
+        MovieDetailSection(movie: widget.movie),
+        // const Text(
+        //   'Genre',
+        //   style: TextStyle(
+        //     fontSize: 18,
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+        // Wrap(
+        //     runSpacing: 5,
+        //     children: (widget.movie.genres ?? [])
+        //         .map((e) => Container(
+        //               padding: const EdgeInsets.symmetric(
+        //                   horizontal: 5, vertical: 3),
+        //               margin: const EdgeInsets.symmetric(horizontal: 2),
+        //               decoration: BoxDecoration(
+        //                   color: Constants.primaryblueColor,
+        //                   borderRadius: BorderRadius.circular(3)),
+        //               child: Text(
+        //                 e,
+        //               ),
+        //             ))
+        //         .toList()),
+        // const SizedBox(
+        //   height: 8,
+        // ),
+        // const Text(
+        //   'Rating',
+        //   style: TextStyle(
+        //     fontSize: 18,
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+        // if (widget.movie.rating != null)
+        //   RatingBar.builder(
+        //     itemCount: 5,
+        //     initialRating: widget.movie.rating! / 2,
+        //     itemSize: 20,
+        //     itemBuilder: (context, _) => const Icon(
+        //       Icons.star,
+        //       color: Colors.amber,
+        //     ),
+        //     onRatingUpdate: (value) {},
+        //   ),
+        // const SizedBox(
+        //   height: 8,
+        // ),
+        // const Text(
+        //   'Tanggal Rilis',
+        //   style: TextStyle(
+        //     fontSize: 18,
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+        // Text(widget.movie.releaseDate ?? '-'),
+        // const SizedBox(
+        //   height: 8,
+        // ),
+        // if (widget.movie.country != null) ...[
+        //   const Text(
+        //     'Negara',
+        //     style: TextStyle(
+        //       fontSize: 18,
+        //       fontWeight: FontWeight.bold,
+        //     ),
+        //   ),
+        //   Text(widget.movie.country ?? '-'),
+        //   const SizedBox(
+        //     height: 8,
+        //   ),
+        // ],
+        // const Text(
+        //   'Sinopsis',
+        //   style: TextStyle(
+        //     fontSize: 18,
+        //     fontWeight: FontWeight.bold,
+        //   ),
+        // ),
+        // Text(widget.movie.description ?? '-'),
+        // const SizedBox(
+        //   height: 15,
+        // ),
+        // const Divider(
+        //   color: Constants.whiteColor,
+        // ),
         const Text(
           'Film Terkait',
           style: TextStyle(

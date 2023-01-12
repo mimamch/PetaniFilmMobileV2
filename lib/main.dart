@@ -30,7 +30,9 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     Constants.showAds ? initializePlugin() : null;
-    Constants.showAds ? ApplovinAdsWidget().initializeInterstitialAds() : null;
+    Constants.showAds && Constants.applovinInterstitialAdUnitId.isNotEmpty
+        ? ApplovinAdsWidget().initializeInterstitialAds()
+        : null;
   }
 
   Future<void> initializePlugin() async {
